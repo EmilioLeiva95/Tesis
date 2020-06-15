@@ -13,7 +13,7 @@ public class lector {
 	         archivo = new File ("./src/main/resources/script/script.sql");
 	         fr = new FileReader (archivo);
 	         br = new BufferedReader(fr);
-	  	   
+	  	     
 	         // Lectura del fichero
 	         String linea;
 	         while((linea=br.readLine())!=null)
