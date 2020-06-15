@@ -6,16 +6,14 @@ public class lector {
 	      File archivo = null;
 	      FileReader fr = null;
 	      BufferedReader br = null;
-	      
-	      
 
 	      try {
 	         // Apertura del fichero y creacion de BufferedReader para poder
 	         // hacer una lectura comoda (disponer del metodo readLine()).
-	         archivo = new File ("src/main/resource/script/script.sql");
+	         archivo = new File ("./src/main/resources/script/script.sql");
 	         fr = new FileReader (archivo);
 	         br = new BufferedReader(fr);
-
+	  	   
 	         // Lectura del fichero
 	         String linea;
 	         while((linea=br.readLine())!=null)
