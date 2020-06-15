@@ -1,5 +1,6 @@
 package objetos;
 
+
 public class columna {
 	Integer idColumna;
 	String descripcion;
