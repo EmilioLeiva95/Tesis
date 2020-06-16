@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.util.List;
 
 import objetos.tabla;
+import objetos.columna;
 
 public class lector {
 	public static void main(String [] arg) {
@@ -19,17 +20,13 @@ public class lector {
 	         fr = new FileReader (archivo);
 	         br = new BufferedReader(fr);
 	  	     List<tabla> tablas;
+	  	     List<columna> columnas;
 	         // Lectura del fichero
 	         String linea;
 	         String[] splitlinea = null;
 	         while((linea=br.readLine())!=null) {
 	        	splitlinea = linea.split(" ");
-	         	for(int i = 0; i < splitlinea.length; i++) {
-	         		if(splitlinea[i].equals("TABLE") && splitlinea[i-1].equals("CREATE")) {
-	         			 System.out.println(splitlinea[i+1]);
-	         			 i=splitlinea.length;
-	         		}
-	         	}
+	         	comparadorTablaColumna(splitlinea);
 	         	comparadorTipoDato(splitlinea);
 	         }
 	      }
@@ -49,6 +46,20 @@ public class lector {
 	      }
 	   }
 
+	private static void comparadorTablaColumna(String[] splitlinea) {
+		for(int i = 0; i < splitlinea.length; i++) {
+     		if(splitlinea[i].equals("TABLE") && splitlinea[i-1].equals("CREATE")) {
+     			 System.out.println(splitlinea[i+1]);
+     			 i=splitlinea.length;
+     		}else {
+     			if(splitlinea[i].matches("\"(.*)") && !splitlinea[i-1].equals("TABLE") && !splitlinea[i-2].equals("ALTER") && !splitlinea[i-1].contentEquals("REFERENCES")) {
+         			 System.out.println("  "+splitlinea[i]);
+         			 i=splitlinea.length;
+     			}	
+     		}
+		}
+	}
+		
 	private static void comparadorTipoDato(String[] splitlinea) {
 		String[] tiposDatos= {"INT","LONG","INTEGER","TINYINT","SMALLINT","BIGINT","REAL","DOUBLE","FLOAT",      
 								"DECIMAL","NUMERIC","CHAR","VARCHAR","LONGVARCHAR","DATE","TIME",
