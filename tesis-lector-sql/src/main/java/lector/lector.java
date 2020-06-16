@@ -14,8 +14,6 @@ public class lector {
 	      BufferedReader br = null;
 
 	      try {
-	         // Apertura del fichero y creacion de BufferedReader para poder
-	         // hacer una lectura comoda (disponer del metodo readLine()).
 	         archivo = new File ("./src/main/resources/script/script.sql");
 	         fr = new FileReader (archivo);
 	         br = new BufferedReader(fr);
@@ -33,9 +31,6 @@ public class lector {
 	      catch(Exception e){
 	         e.printStackTrace();
 	      }finally{
-	         // En el finally cerramos el fichero, para asegurarnos
-	         // que se cierra tanto si todo va bien como si salta 
-	         // una excepcion.
 	         try{                    
 	            if( null != fr ){   
 	               fr.close();     
