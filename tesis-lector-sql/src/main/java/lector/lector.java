@@ -1,5 +1,7 @@
 package lector;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.List;
 
 import objetos.tabla;
@@ -28,7 +30,7 @@ public class lector {
 	         			 i=splitlinea.length;
 	         		}
 	         	}
-	            
+	         	comparadorTipoDato(splitlinea);
 	         }
 	      }
 	      catch(Exception e){
@@ -46,4 +48,22 @@ public class lector {
 	         }
 	      }
 	   }
+
+	private static void comparadorTipoDato(String[] splitlinea) {
+		String[] tiposDatos= {"INT","LONG","INTEGER","TINYINT","SMALLINT","BIGINT","REAL","DOUBLE","FLOAT",      
+								"DECIMAL","NUMERIC","CHAR","VARCHAR","LONGVARCHAR","DATE","TIME",
+								"TIMESTAMP","BOOLEAN","BIT","SERIAL","int","long","integer","tinyint","smallint","bigint",      
+								"decimal","numeric","char","varchar","longvarchar","date","time",
+								"timestamp","boolean","bit","real","double","float","serial"};
+		for(int i = 0; i<splitlinea.length; i++) {
+			for(int j = 0; j<tiposDatos.length; j++) {
+				if(splitlinea[i].contains(tiposDatos[j])) {
+					System.out.println("tipo de dato:"+tiposDatos[j]);
+        			 i=splitlinea.length;
+        			 j=tiposDatos.length;
+				}
+			}
+        }
+		
+	}
 }
