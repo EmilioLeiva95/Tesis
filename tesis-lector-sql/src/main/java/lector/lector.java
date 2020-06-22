@@ -81,6 +81,7 @@ public class lector {
 	private static void comparadorTablaColumna(String[] splitlinea, List<tabla> tablas, List<columna> columnas) {
 		for(int i = 0; i < splitlinea.length; i++) {
 			tabla tablaNueva = new tabla();
+			columna columnaNueva = new columna();
      		if(splitlinea[i].equals("TABLE") && splitlinea[i-1].equals("CREATE")) {
      			System.out.println("========================================="); 
      			System.out.println("TABLA:"+splitlinea[i+1]);
@@ -91,12 +92,19 @@ public class lector {
      			}
      			tablaNueva.setDescripcion(splitlinea[i+1].replaceAll("\"", ""));
      			tablas.add(tablaNueva);
-     			 i=splitlinea.length;
+     			i=splitlinea.length;
      		}else {
      			if(splitlinea[i].matches("\"(.*)") && !splitlinea[i-1].equals("TABLE") && !splitlinea[i-2].equals("ALTER") && !splitlinea[i-1].contentEquals("REFERENCES")) {
-     				 System.out.println("----------------------------------------"); 
-     				 System.out.println("COLUMNA:"+splitlinea[i]);
-         			 i=splitlinea.length;
+	 				System.out.println("----------------------------------------"); 
+	 				System.out.println("COLUMNA:"+splitlinea[i]);
+	     			i=splitlinea.length;
+//         			if(columnas == null) {
+//         				columnaNueva.setIdColumna(1);
+//         			}else {
+//         				columnaNueva.setIdColumna(columnas.size()+1);
+//         			}
+//         			columnaNueva.setDescripcion(splitlinea[i]);
+//         			columnaNueva.setTabla(tablas.get(tablas.));
      			}	
      		}
 		}
