@@ -2,10 +2,12 @@ package lector;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import objetos.tabla;
 import objetos.columna;
+import objetos.tipo;
 
 public class lector {
 	public static void main(String [] arg) {
@@ -18,8 +20,10 @@ public class lector {
 	         archivo = new File ("./src/main/resources/script/script.sql");
 	         fr = new FileReader (archivo);
 	         br = new BufferedReader(fr);
-	  	     List<tabla> tablas = null;
-	  	     List<columna> columnas = null;
+	  	     List<tabla> tablas = new ArrayList();
+	  	     List<columna> columnas = new ArrayList();
+	  	     List<tipo> tipo = new ArrayList();
+	  	     
 	         // Lectura del fichero
 	         String linea;
 	         String[] splitlinea = null;
@@ -31,6 +35,7 @@ public class lector {
 	         	comparadorNulidad(splitlinea,tablas,columnas);
 	         	comparadorLlaveForanea(splitlinea,tablas,columnas);
 	         }
+	         System.out.println("=============FIN PROCESO==========");
 	      }
 	      catch(Exception e){
 	         e.printStackTrace();
@@ -87,7 +92,7 @@ public class lector {
      			}else {
      				tablaNueva.setIdTabla(tablas.size()+1);
      			}
-     			tablaNueva.setDescripcion(splitlinea[i+1]);
+     			tablaNueva.setDescripcion(splitlinea[i+1].replaceAll("\"", ""));
      			tablas.add(tablaNueva);
      			 i=splitlinea.length;
      		}else {
