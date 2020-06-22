@@ -24,7 +24,7 @@ CREATE TABLE "carro" (
   "id_carro" SERIAL PRIMARY KEY NOT NULL,
   "id_marca" INT NOT NULL,
   "precio" LONG,
-  "color" VARCHAR(30)
+  "color" CHAR(30)
 );
 
 CREATE TABLE "cliente" (
