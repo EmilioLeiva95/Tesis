@@ -30,7 +30,7 @@ public class lector {
 	         while((linea=br.readLine())!=null) {
 	        	splitlinea = linea.split(" ");
 	         	comparadorTablaColumna(splitlinea,tablas,columnas);
-	         	comparadorTipoDato(splitlinea,tablas,columnas);
+	         	comparadorTipoDato(splitlinea,tablas,columnas,tipo);
 	         	comparadorLlavePrimaria(splitlinea,tablas,columnas);
 	         	comparadorNulidad(splitlinea,tablas,columnas);
 	         	comparadorLlaveForanea(splitlinea,tablas,columnas);
@@ -84,6 +84,7 @@ public class lector {
 	private static void comparadorTablaColumna(String[] splitlinea, List<tabla> tablas, List<columna> columnas) {
 		for(int i = 0; i < splitlinea.length; i++) {
 			tabla tablaNueva = new tabla();
+			columna columnaNueva = new columna();
      		if(splitlinea[i].equals("TABLE") && splitlinea[i-1].equals("CREATE")) {
      			System.out.println("========================================="); 
      			System.out.println("TABLA:"+splitlinea[i+1]);
@@ -94,25 +95,40 @@ public class lector {
      			}
      			tablaNueva.setDescripcion(splitlinea[i+1].replaceAll("\"", ""));
      			tablas.add(tablaNueva);
-     			 i=splitlinea.length;
+     			i=splitlinea.length;
      		}else {
      			if(splitlinea[i].matches("\"(.*)") && !splitlinea[i-1].equals("TABLE") && !splitlinea[i-2].equals("ALTER") && !splitlinea[i-1].contentEquals("REFERENCES")) {
-     				 System.out.println("----------------------------------------"); 
-     				 System.out.println("COLUMNA:"+splitlinea[i]);
-         			 i=splitlinea.length;
+	 				System.out.println("----------------------------------------"); 
+	 				System.out.println("COLUMNA:"+splitlinea[i]);
+	     			i=splitlinea.length;
+//         			if(columnas == null) {
+//         				columnaNueva.setIdColumna(1);
+//         			}else {
+//         				columnaNueva.setIdColumna(columnas.size()+1);
+//         			}
+//         			columnaNueva.setDescripcion(splitlinea[i]);
+//         			columnaNueva.setTabla(tablas.get(tablas.));
      			}	
      		}
 		}
 	}
 		
-	private static void comparadorTipoDato(String[] splitlinea, List<tabla> tablas, List<columna> columnas) {
+	private static void comparadorTipoDato(String[] splitlinea, List<tabla> tablas, List<columna> columnas,List<tipo> tipo) {
 		String[] tiposDatos= {"INT","LONG","INTEGER","TINYINT","SMALLINT","BIGINT","REAL","DOUBLE","FLOAT",      
-								"DECIMAL","NUMERIC","CHAR","VARCHAR","LONGVARCHAR","DATE","TIME",
+								"DECIMAL","NUMERIC","CHAR","VARCHAR","LONGVARCHAR","VAR","DATE","TIME",
 								"TIMESTAMP","BOOLEAN","BIT","SERIAL",};
 		for(int i = 0; i<splitlinea.length; i++) {
+			tipo tipoNuevo = new tipo();
 			for(int j = 0; j<tiposDatos.length; j++) {
 				if(splitlinea[i].contains(tiposDatos[j])) {
 					System.out.println("TIPO:"+tiposDatos[j]);
+					if(tipo == null) {
+	     				tipoNuevo.setIdTipo(1);
+	     			}else {
+	     				tipoNuevo.setIdTipo(tipo.size()+1);
+	     			}
+	     			tipoNuevo.setDescripcion(tiposDatos[j]);
+	     			tipo.add(tipoNuevo);
         			 i=splitlinea.length;
         			 j=tiposDatos.length;
 				}

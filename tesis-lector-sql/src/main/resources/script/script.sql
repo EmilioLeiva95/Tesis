@@ -1,53 +1,53 @@
 CREATE TABLE "marca" (
   "id_marca" SERIAL PRIMARY KEY NOT NULL,
-  "descripcion" varchar(30)
+  "descripcion" VARCHAR(30)
 );
 
 CREATE TABLE "rango_cliente" (
   "id_rango" SERIAL PRIMARY KEY NOT NULL,
-  "descripcion" varchar(50)
+  "descripcion" VARCHAR(50)
 );
 
 CREATE TABLE "tipo_contrato" (
   "id_tipo" SERIAL PRIMARY KEY NOT NULL,
-  "descripcion" varchar(50)
+  "descripcion" VARCHAR(50)
 );
 
 CREATE TABLE "Persona" (
   "id_persona" SERIAL PRIMARY KEY NOT NULL,
-  "nombre" varchar(100),
-  "dui" varchar(10),
-  "genero" varchar(1)
+  "nombre" VARCHAR(100),
+  "dui" VARCHAR(10),
+  "genero" VARCHAR(1)
 );
 
 CREATE TABLE "carro" (
   "id_carro" SERIAL PRIMARY KEY NOT NULL,
-  "id_marca" int NOT NULL,
-  "precio" long,
-  "color" varchar(30)
+  "id_marca" INT NOT NULL,
+  "precio" LONG,
+  "color" VARCHAR(30)
 );
 
 CREATE TABLE "cliente" (
   "id_cliente" SERIAL PRIMARY KEY NOT NULL,
-  "id_persona" int NOT NULL,
-  "id_rango" int NOT NULL,
-  "lista_negra" var(1)
+  "id_persona" INT NOT NULL,
+  "id_rango" INT NOT NULL,
+  "lista_negra" VAR(1)
 );
 
 CREATE TABLE "Vendedor" (
   "id_vendedor" SERIAL PRIMARY KEY NOT NULL,
-  "id_persona" int NOT NULL,
-  "sueldo" long,
-  "genero" var(1)
+  "id_persona" INT NOT NULL,
+  "sueldo" LONG,
+  "genero" VAR(1)
 );
 
 CREATE TABLE "contrato" (
   "id_contrato" SERIAL PRIMARY KEY NOT NULL,
-  "id_carro" int NOT NULL,
-  "id_cliente" int NOT NULL,
-  "id_vendedor" int NOT NULL,
-  "costo" long,
-  "id_tipo" int NOT NULL
+  "id_carro" INT NOT NULL,
+  "id_cliente" INT NOT NULL,
+  "id_vendedor" INT NOT NULL,
+  "costo" LONG,
+  "id_tipo" INT NOT NULL
 );
 
 ALTER TABLE "marca" ADD FOREIGN KEY ("id_marca") REFERENCES "carro" ("id_marca");
