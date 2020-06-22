@@ -13,6 +13,7 @@ public class lector {
 	      FileReader fr = null;
 	      BufferedReader br = null;
 
+	      
 	      try {
 	         archivo = new File ("./src/main/resources/script/script.sql");
 	         fr = new FileReader (archivo);
