@@ -34,9 +34,9 @@ public class lector {
 	        	columna columnaNueva = new columna();
 	        	splitlinea = linea.split(" ");
 	         	comparadorTablaColumna(splitlinea,tablas,columnas,columnaNueva);
-	         	comparadorLlavePrimaria(splitlinea,tablas,columnas,columnaNueva);
-	         	comparadorNulidad(splitlinea,tablas,columnas,columnaNueva);
-	         	comparadorTipoDato(splitlinea,tablas,columnas,tipo,ar,columnaNueva);
+	         	comparadorLlavePrimaria(splitlinea,columnaNueva);
+	         	comparadorNulidad(splitlinea,columnaNueva);
+	         	comparadorTipoDato(splitlinea,tipo,ar,columnaNueva);
 	         	comparadorLlaveForanea(splitlinea,tablas,columnas);
 	         	if(columnaNueva.getIdColumna() != null) {
 	         		columnas.add(columnaNueva);
@@ -115,7 +115,7 @@ public class lector {
 		}
 	}
 
-	private static void comparadorNulidad(String[] splitlinea, List<tabla> tablas, List<columna> columnas, columna columnaNueva) {
+	private static void comparadorNulidad(String[] splitlinea, columna columnaNueva) {
 		for(int i = 0; i < splitlinea.length; i++) {
      		if(splitlinea[i].contains("NULL") && splitlinea[i-1].equals("NOT")) {
      			System.out.println("-NO PUEDE SER NULO-");
@@ -127,7 +127,7 @@ public class lector {
 		}
 	}
 
-	private static void comparadorLlavePrimaria(String[] splitlinea, List<tabla> tablas, List<columna> columnas, columna columnaNueva) {
+	private static void comparadorLlavePrimaria(String[] splitlinea, columna columnaNueva) {
 		for(int i = 0; i < splitlinea.length; i++) {
      		if(splitlinea[i].equals("PRIMARY") && splitlinea[i+1].contains("KEY")) {
      			System.out.println("-LLAVE PRIMARIA-");
@@ -170,7 +170,7 @@ public class lector {
 		}
 	}
 		
-	private static void comparadorTipoDato(String[] splitlinea, List<tabla> tablas, List<columna> columnas,List<tipo> tipo,List<String> ar, columna columnaNueva) {
+	private static void comparadorTipoDato(String[] splitlinea,List<tipo> tipo,List<String> ar, columna columnaNueva) {
 		String[] tiposDatos= {"LONG","INTEGER","SMALLINT","BIGINT","REAL","DOUBLE","FLOAT",      
 								"DECIMAL","NUMERIC","DATE","TIMESTAMP","BOOLEAN","BIT","SERIAL",};
 		
