@@ -3,7 +3,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +25,7 @@ public class lector {
 	  	     List<tabla> tablas = new ArrayList();
 	  	     List<columna> columnas = new ArrayList();
 	  	     List<tipo> tipo = new ArrayList();
-	  	     ArrayList<String> ar = new ArrayList<String>();
+	  	     List<String> ar = new ArrayList();
 	  	     
 	         // Lectura del fichero
 	         String linea;
@@ -35,10 +34,10 @@ public class lector {
 	        	columna columnaNueva = new columna();
 	        	splitlinea = linea.split(" ");
 	         	comparadorTablaColumna(splitlinea,tablas,columnas,columnaNueva);
-	         	comparadorLlavePrimaria(splitlinea,tablas,columnas,columnaNueva);
-	         	comparadorNulidad(splitlinea,tablas,columnas,columnaNueva);
-	         	comparadorTipoDato(splitlinea,tablas,columnas,tipo,ar);
-	         	comparadorLlaveForanea(splitlinea,tablas,columnas);
+	         	comparadorLlavePrimaria(splitlinea,columnaNueva);
+	         	comparadorNulidad(splitlinea,columnaNueva);
+	         	comparadorTipoDato(splitlinea,tipo,ar,columnaNueva);
+	         	comparadorLlaveForanea(splitlinea,columnas);
 	         	if(columnaNueva.getIdColumna() != null) {
 	         		columnas.add(columnaNueva);
 	         	}
@@ -58,7 +57,7 @@ public class lector {
 	      }
 	   }
 
-	private static void comparadorLlaveForanea(String[] splitlinea, List<tabla> tablas, List<columna> columnas) {
+	private static void comparadorLlaveForanea(String[] splitlinea, List<columna> columnas) {
 		columna columnaForaneaAux = new columna();
 		columna columnaReferenciaAux = new columna();
 		columna columnaForanea = new columna();
@@ -95,12 +94,28 @@ public class lector {
 			}
 			columnaForanea.setColumnaReferencia(columnaReferencia);
 			columnaForanea.setLlaveForanea(true);
-			columnas.remove(columnaForanea.getIdColumna()-1);
-			columnas.add(columnaForanea);
+			colocarColumna(columnaForanea,columnas);
 		}
 	}
 
-	private static void comparadorNulidad(String[] splitlinea, List<tabla> tablas, List<columna> columnas, columna columnaNueva) {
+	private static void colocarColumna(columna columnaForanea, List<columna> columnas) {
+		int contador = columnaForanea.getIdColumna();
+		columna columnaAux = new columna();
+		for(int i = 0; i < columnas.size(); i++) {
+			if(i == contador-1) {
+				columnas.remove(i);
+				columnas.add(columnaForanea);
+			}else {
+				if(i > contador-1) {
+					columnaAux = columnas.get(contador-1);
+					columnas.remove(contador-1);
+					columnas.add(columnaAux);
+				}
+			}
+		}
+	}
+
+	private static void comparadorNulidad(String[] splitlinea, columna columnaNueva) {
 		for(int i = 0; i < splitlinea.length; i++) {
      		if(splitlinea[i].contains("NULL") && splitlinea[i-1].equals("NOT")) {
      			System.out.println("-NO PUEDE SER NULO-");
@@ -112,7 +127,7 @@ public class lector {
 		}
 	}
 
-	private static void comparadorLlavePrimaria(String[] splitlinea, List<tabla> tablas, List<columna> columnas, columna columnaNueva) {
+	private static void comparadorLlavePrimaria(String[] splitlinea, columna columnaNueva) {
 		for(int i = 0; i < splitlinea.length; i++) {
      		if(splitlinea[i].equals("PRIMARY") && splitlinea[i+1].contains("KEY")) {
      			System.out.println("-LLAVE PRIMARIA-");
@@ -155,15 +170,16 @@ public class lector {
 		}
 	}
 		
-	private static void comparadorTipoDato(String[] splitlinea, List<tabla> tablas, List<columna> columnas,List<tipo> tipo,ArrayList<String> ar) {
-		String[] tiposDatos= {"INT","LONG","INTEGER","TINYINT","SMALLINT","BIGINT","REAL","DOUBLE","FLOAT",      
-								"DECIMAL","NUMERIC","LONGVARCHAR","DATE","TIME",
-								"TIMESTAMP","BOOLEAN","BIT","SERIAL",};
+	private static void comparadorTipoDato(String[] splitlinea,List<tipo> tipo,List<String> ar, columna columnaNueva) {
+		String[] tiposDatos= {"LONG","INTEGER","SMALLINT","BIGINT","REAL","DOUBLE","FLOAT",      
+								"DECIMAL","NUMERIC","DATE","TIMESTAMP","BOOLEAN","BIT","SERIAL",};
 		
 		Pattern pattern1 = Pattern.compile("^CHAR.*");
 		Pattern pattern2 = Pattern.compile("^VARCHAR");
 		Pattern pattern3 = Pattern.compile("VAR(?!CHAR)");
-		boolean ver,ver2,ver3,ver4;
+		Pattern pattern4 = Pattern.compile("^INT(?!EGER)");
+		Pattern pattern5 = Pattern.compile("^TIME(?!STAMP)");
+		boolean ver,ver2,ver3,ver4,ver5,ver6;
 	
 		
 		for(int i = 0; i<splitlinea.length; i++) {
@@ -171,6 +187,8 @@ public class lector {
 			Matcher m = pattern1.matcher(splitlinea[i]);
 			Matcher m2 = pattern2.matcher(splitlinea[i]);
 			Matcher m3 = pattern3.matcher(splitlinea[i]);
+			Matcher m4 = pattern4.matcher(splitlinea[i]);
+			Matcher m5 = pattern5.matcher(splitlinea[i]);
 			for(int j = 0; j<tiposDatos.length; j++) {
 				
 				if(splitlinea[i].contains(tiposDatos[j])) {
@@ -186,7 +204,7 @@ public class lector {
 					ar.add(tiposDatos[j]);
 	     			tipoNuevo.setDescripcion(tiposDatos[j]);
 	     			tipo.add(tipoNuevo);
-	     			
+	     			columnaNueva.setTipo(tipoNuevo);
         			 i=splitlinea.length;
         			 j=tiposDatos.length;}
 				}else {
@@ -202,7 +220,9 @@ public class lector {
 		     			}
 						ar.add("CHAR");
 		     			tipoNuevo.setDescripcion("CHAR");
-		     			tipo.add(tipoNuevo);}
+		     			tipo.add(tipoNuevo);
+		     			columnaNueva.setTipo(tipoNuevo);
+						}
 					}else{
 						if(m2.find()) {
 							System.out.println("TIPO:VARCHAR");
@@ -215,7 +235,8 @@ public class lector {
 			     			}
 							ar.add("VARCHAR");
 			     			tipoNuevo.setDescripcion("VARCHAR");
-			     			tipo.add(tipoNuevo);}
+			     			tipo.add(tipoNuevo);
+			     			columnaNueva.setTipo(tipoNuevo);}
 						}else{
 							if(m3.find()) {
 								System.out.println("TIPO:VAR");
@@ -228,18 +249,55 @@ public class lector {
 				     			}
 								ar.add("VAR");
 				     			tipoNuevo.setDescripcion("VAR");
-				     			tipo.add(tipoNuevo);}
+				     			tipo.add(tipoNuevo);
+				     			columnaNueva.setTipo(tipoNuevo);
+				     			}
+							}else {
+								if(m4.find()) {
+									System.out.println("TIPO:INT");
+									ver5=ar.contains("INT");
+									if(ver5==false){
+									if(tipo == null) {
+					     				tipoNuevo.setIdTipo(1);
+					     			}else {
+					     				tipoNuevo.setIdTipo(tipo.size()+1);
+					     			}
+									ar.add("INT");
+					     			tipoNuevo.setDescripcion("INT");
+					     			tipo.add(tipoNuevo);
+					     			columnaNueva.setTipo(tipoNuevo);}
+								}else {
+									if(m5.find()) {
+										System.out.println("TIPO:TIME");
+										ver6=ar.contains("TIME");
+										if(ver6==false){
+										if(tipo == null) {
+						     				tipoNuevo.setIdTipo(1);
+						     			}else {
+						     				tipoNuevo.setIdTipo(tipo.size()+1);
+						     			}
+										ar.add("TIME");
+						     			tipoNuevo.setDescripcion("TIME");
+						     			tipo.add(tipoNuevo);
+						     			columnaNueva.setTipo(tipoNuevo);}
+									}else {
+										for(int k=0;k<ar.size();k++) {
+											String aux=ar.get(k);
+											if(splitlinea[i].equals(aux)) {
+												tipo tipoAux = new tipo();
+												tipoAux.setIdTipo(k);
+												tipoAux.setDescripcion(aux);
+												columnaNueva.setTipo(tipoAux);
+											}
+										}
+									}
+								}
 							}
 						}
-						}
-					
-						
-						
-				}
-				
-				}
+					}				
+				}	
 			}
-       
+		}   
 	}
-	}
+}
 
