@@ -3,7 +3,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +36,7 @@ public class lector {
 	         	comparadorTablaColumna(splitlinea,tablas,columnas,columnaNueva);
 	         	comparadorLlavePrimaria(splitlinea,tablas,columnas,columnaNueva);
 	         	comparadorNulidad(splitlinea,tablas,columnas,columnaNueva);
-	         	comparadorTipoDato(splitlinea,tablas,columnas,tipo,ar);
+	         	comparadorTipoDato(splitlinea,tablas,columnas,tipo,ar,columnaNueva);
 	         	comparadorLlaveForanea(splitlinea,tablas,columnas);
 	         	if(columnaNueva.getIdColumna() != null) {
 	         		columnas.add(columnaNueva);
@@ -95,8 +94,24 @@ public class lector {
 			}
 			columnaForanea.setColumnaReferencia(columnaReferencia);
 			columnaForanea.setLlaveForanea(true);
-			columnas.remove(columnaForanea.getIdColumna()-1);
-			columnas.add(columnaForanea);
+			colocarColumna(columnaForanea,columnas);
+		}
+	}
+
+	private static void colocarColumna(columna columnaForanea, List<columna> columnas) {
+		int contador = columnaForanea.getIdColumna();
+		columna columnaAux = new columna();
+		for(int i = 0; i < columnas.size(); i++) {
+			if(i == contador-1) {
+				columnas.remove(i);
+				columnas.add(columnaForanea);
+			}else {
+				if(i > contador-1) {
+					columnaAux = columnas.get(contador-1);
+					columnas.remove(contador-1);
+					columnas.add(columnaAux);
+				}
+			}
 		}
 	}
 
@@ -155,7 +170,7 @@ public class lector {
 		}
 	}
 		
-	private static void comparadorTipoDato(String[] splitlinea, List<tabla> tablas, List<columna> columnas,List<tipo> tipo,ArrayList<String> ar) {
+	private static void comparadorTipoDato(String[] splitlinea, List<tabla> tablas, List<columna> columnas,List<tipo> tipo,ArrayList<String> ar, columna columnaNueva) {
 		String[] tiposDatos= {"INT","LONG","INTEGER","TINYINT","SMALLINT","BIGINT","REAL","DOUBLE","FLOAT",      
 								"DECIMAL","NUMERIC","LONGVARCHAR","DATE","TIME",
 								"TIMESTAMP","BOOLEAN","BIT","SERIAL",};
