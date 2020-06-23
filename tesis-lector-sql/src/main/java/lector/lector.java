@@ -37,7 +37,7 @@ public class lector {
 	         	comparadorLlavePrimaria(splitlinea,columnaNueva);
 	         	comparadorNulidad(splitlinea,columnaNueva);
 	         	comparadorTipoDato(splitlinea,tipo,ar,columnaNueva);
-	         	comparadorLlaveForanea(splitlinea,tablas,columnas);
+	         	comparadorLlaveForanea(splitlinea,columnas);
 	         	if(columnaNueva.getIdColumna() != null) {
 	         		columnas.add(columnaNueva);
 	         	}
@@ -57,7 +57,7 @@ public class lector {
 	      }
 	   }
 
-	private static void comparadorLlaveForanea(String[] splitlinea, List<tabla> tablas, List<columna> columnas) {
+	private static void comparadorLlaveForanea(String[] splitlinea, List<columna> columnas) {
 		columna columnaForaneaAux = new columna();
 		columna columnaReferenciaAux = new columna();
 		columna columnaForanea = new columna();
