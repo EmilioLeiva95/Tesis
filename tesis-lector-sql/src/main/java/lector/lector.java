@@ -171,9 +171,8 @@ public class lector {
 	}
 		
 	private static void comparadorTipoDato(String[] splitlinea, List<tabla> tablas, List<columna> columnas,List<tipo> tipo,ArrayList<String> ar, columna columnaNueva) {
-		String[] tiposDatos= {"INT","LONG","INTEGER","TINYINT","SMALLINT","BIGINT","REAL","DOUBLE","FLOAT",      
-								"DECIMAL","NUMERIC","LONGVARCHAR","DATE","TIME",
-								"TIMESTAMP","BOOLEAN","BIT","SERIAL",};
+		String[] tiposDatos= {"INT","LONG","INTEGER","SMALLINT","BIGINT","REAL","DOUBLE","FLOAT",      
+								"DECIMAL","NUMERIC","DATE","TIME","TIMESTAMP","BOOLEAN","BIT","SERIAL",};
 		
 		Pattern pattern1 = Pattern.compile("^CHAR.*");
 		Pattern pattern2 = Pattern.compile("^VARCHAR");
