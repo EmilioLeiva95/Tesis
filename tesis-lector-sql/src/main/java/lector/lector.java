@@ -13,7 +13,12 @@ import objetos.columna;
 import objetos.tipo;
 import objetos.plantilla;
 
+
+
 public class lector {
+	static List<tabla> tablasGlobal = new ArrayList();
+	static List<columna> columnasGlobal = new ArrayList();
+	static List<tipo> tipoGlobal = new ArrayList();
 	public static void main(String [] arg) {
 	      File archivo = null;
 	      FileReader fr = null;
@@ -23,7 +28,7 @@ public class lector {
 	}
 
 	private static void lectorPlantilla(File archivo, FileReader fr, BufferedReader br) {
-		archivo = new File ("./src/main/resources/script/plantilla.aur");
+		archivo = new File ("./src/main/resources/plantilla/plantilla.aur");
 		 try {
 				fr = new FileReader (archivo);
 		        br = new BufferedReader(fr);
@@ -31,12 +36,16 @@ public class lector {
 		        String linea;
 		        String[] splitlinea = null;
 		        Integer ocultar = 0;
+		        tabla tablaAux = new tabla();
 		        while((linea=br.readLine())!=null) {
+		        	splitlinea = linea.split(" ");
 		        	validadorRequeridos(splitlinea, plantillas);
-		        	validadorOcultos(splitlinea, plantillas,ocultar);
+		        	ocultar = validadorOcultos(splitlinea,ocultar);
+		        	tablaAux = ingresarOcultos(splitlinea,plantillas,ocultar,tablaAux);
 		        	validadorFechaHora(splitlinea, plantillas);
 		        	validadorPedeterminados(splitlinea, plantillas);
 		        }
+		        System.out.println("probando");
 		 }catch(Exception e){
 	         e.printStackTrace();
 	      }finally{
@@ -50,6 +59,33 @@ public class lector {
 	      }
 	}
 
+	private static tabla ingresarOcultos(String[] splitlinea, List<plantilla> plantillas, Integer ocultar,tabla tablaAux) {
+		if(ocultar == 1) {
+			plantilla plantillaNueva = new plantilla();
+			plantillaNueva.setIdplantilla(plantillas.size());
+			if(splitlinea.length >= 3) {
+				if(splitlinea[splitlinea.length-3].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
+		 			 for(tabla i : tablasGlobal) {
+		 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2])) {
+		 					tablaAux = i;
+		 				 }
+		 			 }
+		 		}
+				if(splitlinea[splitlinea.length-3].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
+					for(columna i : columnasGlobal) {
+		 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2]) && i.getTabla().getDescripcion().equals(tablaAux.getDescripcion())) {
+		 					plantillaNueva.setTabla(tablaAux);
+		 					plantillaNueva.setColumna(i);
+		 					plantillaNueva.setTipo(6);
+		 					plantillas.add(plantillaNueva);
+		 				 }
+		 			 }
+				}
+			}
+		}
+		return tablaAux;
+	}
+
 	private static void validadorPedeterminados(String[] splitlinea, List<plantilla> plantillas) {
 		// TODO Auto-generated method stub
 	}
@@ -58,16 +94,11 @@ public class lector {
 		// TODO Auto-generated method stub
 	}
 
-	private static void validadorOcultos(String[] splitlinea, List<plantilla> plantillas, Integer ocultar ) {
+	private static Integer validadorOcultos(String[] splitlinea, Integer ocultar ) {
 		if(splitlinea[0].contains("<OCULTAR>") && (ocultar == 1 || ocultar == 0)) {
- 			 ocultar ++;
+ 			 ocultar=ocultar+1;
  		}
-		if(ocultar == 1) {
-			plantilla plantillaNueva = new plantilla();
-			for(int i = 0; i < splitlinea.length; i++) {
-	     		
-			}
-		}
+		return ocultar;
 	}
 
 	private static void validadorRequeridos(String[] splitlinea, List<plantilla> plantillas) {
@@ -76,13 +107,13 @@ public class lector {
 
 	private static void lectorScript(File archivo, FileReader fr, BufferedReader br) {
 		archivo = new File ("./src/main/resources/script/script.sql");
+		List<String> ar = new ArrayList();
+		List<tabla> tablas = new ArrayList();
+		List<columna> columnas = new ArrayList();
+		List<tipo> tipo = new ArrayList();
         try {
 			fr = new FileReader (archivo);
 	        br = new BufferedReader(fr);
-	 	    List<tabla> tablas = new ArrayList();
-	 	    List<columna> columnas = new ArrayList();
-	 	    List<tipo> tipo = new ArrayList();
-	 	    List<String> ar = new ArrayList();
 	        // Lectura del fichero
 	        String linea;
 	        String[] splitlinea = null;
@@ -98,6 +129,9 @@ public class lector {
 	        		columnas.add(columnaNueva);
 	        	}
 	        }
+	        tablasGlobal = tablas;
+	        columnasGlobal = columnas;
+	        tipoGlobal = tipo;
         }catch(Exception e){
 	         e.printStackTrace();
 	      }finally{
