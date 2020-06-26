@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import objetos.tabla;
 import objetos.columna;
 import objetos.tipo;
+import objetos.plantilla;
 
 public class lector {
 	public static void main(String [] arg) {
@@ -26,13 +27,14 @@ public class lector {
 		 try {
 				fr = new FileReader (archivo);
 		        br = new BufferedReader(fr);
+		        List<plantilla> plantillas = new ArrayList();
 		        String linea;
 		        String[] splitlinea = null;
 		        while((linea=br.readLine())!=null) {
-		        	validadorRequeridos(splitlinea);
-		        	validadorOcultos(splitlinea);
-		        	validadorFechaHora(splitlinea);
-		        	validadorPedeterminados(splitlinea);
+		        	validadorRequeridos(splitlinea, plantillas);
+		        	validadorOcultos(splitlinea, plantillas);
+		        	validadorFechaHora(splitlinea, plantillas);
+		        	validadorPedeterminados(splitlinea, plantillas);
 		        }
 		 }catch(Exception e){
 	         e.printStackTrace();
@@ -47,19 +49,19 @@ public class lector {
 	      }
 	}
 
-	private static void validadorPedeterminados(String[] splitlinea) {
+	private static void validadorPedeterminados(String[] splitlinea, List<plantilla> plantillas) {
 		// TODO Auto-generated method stub
 	}
 
-	private static void validadorFechaHora(String[] splitlinea) {
+	private static void validadorFechaHora(String[] splitlinea, List<plantilla> plantillas) {
 		// TODO Auto-generated method stub
 	}
 
-	private static void validadorOcultos(String[] splitlinea) {
+	private static void validadorOcultos(String[] splitlinea, List<plantilla> plantillas) {
 		// TODO Auto-generated method stub
 	}
 
-	private static void validadorRequeridos(String[] splitlinea) {
+	private static void validadorRequeridos(String[] splitlinea, List<plantilla> plantillas) {
 		// TODO Auto-generated method stub
 	}
 

@@ -1,5 +1,6 @@
 package objetos;
 
+
 public class plantilla {
 	Integer idplantilla;
 	Integer tipo;
