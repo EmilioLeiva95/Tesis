@@ -1,0 +1,36 @@
+<BD> Tesis <BD>
+<CONTRA> contraTesis <CONTRA>
+<USUARIO> User <USUARIO>
+<IP> 192.168.0.1 <IP>
+<PUERTO> 8083 <PUERTO>
+<OCULTAR>
+    <TABLA> marca <TABLA>
+    <COLUMNA> id_marca <COLUMNA>   
+    <TABLA> rango_cliente <TABLA>
+    <COLUMNA> id_rango <COLUMNA>
+    <TABLA> tipo_contrato <TABLA>
+    <COLUMNA> id_tipo <COLUMNA>
+    <TABLA> Persona <TABLA>
+    <COLUMNA> id_persona <COLUMNA>
+    <TABLA> carro <TABLA>
+    <COLUMNA> id_carro <COLUMNA>
+    <TABLA> cliente <TABLA>
+    <COLUMNA> id_cliente <COLUMNA>
+    <TABLA> Vendedor <TABLA>
+    <COLUMNA> id_vendedor <COLUMNA>
+    <TABLA> contrato <TABLA>
+    <COLUMNA> id_contrato <COLUMNA>
+<OCULTAR>
+<FECHA> DD-MM-YYY <FECHA>
+<HORA> HH:MM A <HORA>
+<PREDETERMINADO>
+    <TABLA> cliente <TABLA>
+    <COLUMNA> lista_negra <COLUMNA>
+        <D> S <d> SI <D>
+        <D> N <d> NO <D>
+    <TABLA> Vendedor <TABLA>
+    <COLUMNA> genero <COLUMNA>
+        <D> M <d> Masculino <D>
+        <D> F <d> Femenino <D>
+        <D> O <d> Otro <D>
+<PREDETERMINADO>
