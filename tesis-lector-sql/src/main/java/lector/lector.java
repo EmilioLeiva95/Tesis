@@ -30,9 +30,10 @@ public class lector {
 		        List<plantilla> plantillas = new ArrayList();
 		        String linea;
 		        String[] splitlinea = null;
+		        Integer ocultar = 0;
 		        while((linea=br.readLine())!=null) {
 		        	validadorRequeridos(splitlinea, plantillas);
-		        	validadorOcultos(splitlinea, plantillas);
+		        	validadorOcultos(splitlinea, plantillas,ocultar);
 		        	validadorFechaHora(splitlinea, plantillas);
 		        	validadorPedeterminados(splitlinea, plantillas);
 		        }
@@ -57,8 +58,16 @@ public class lector {
 		// TODO Auto-generated method stub
 	}
 
-	private static void validadorOcultos(String[] splitlinea, List<plantilla> plantillas) {
-		// TODO Auto-generated method stub
+	private static void validadorOcultos(String[] splitlinea, List<plantilla> plantillas, Integer ocultar ) {
+		if(splitlinea[0].contains("<OCULTAR>") && (ocultar == 1 || ocultar == 0)) {
+ 			 ocultar ++;
+ 		}
+		if(ocultar == 1) {
+			plantilla plantillaNueva = new plantilla();
+			for(int i = 0; i < splitlinea.length; i++) {
+	     		
+			}
+		}
 	}
 
 	private static void validadorRequeridos(String[] splitlinea, List<plantilla> plantillas) {
