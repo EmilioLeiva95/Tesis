@@ -18,7 +18,6 @@ public class lector {
 	      FileReader fr = null;
 	      BufferedReader br = null;
 	      lectorScript(archivo,fr,br);
-	      System.out.println("=============FIN PROCESO==========");
 	}
 
 	private static void lectorScript(File archivo, FileReader fr, BufferedReader br) {
@@ -114,7 +113,6 @@ public class lector {
 	private static void comparadorNulidad(String[] splitlinea, columna columnaNueva) {
 		for(int i = 0; i < splitlinea.length; i++) {
      		if(splitlinea[i].contains("NULL") && splitlinea[i-1].equals("NOT")) {
-     			System.out.println("-NO PUEDE SER NULO-");
      			 i=splitlinea.length;
      			columnaNueva.setNuleable(false);
      		}else {
@@ -126,7 +124,6 @@ public class lector {
 	private static void comparadorLlavePrimaria(String[] splitlinea, columna columnaNueva) {
 		for(int i = 0; i < splitlinea.length; i++) {
      		if(splitlinea[i].equals("PRIMARY") && splitlinea[i+1].contains("KEY")) {
-     			System.out.println("-LLAVE PRIMARIA-");
      			columnaNueva.setLlavePrimaria(true);
      			 i=splitlinea.length;
      		}else {
@@ -196,7 +193,6 @@ public class lector {
 					}
 				}else{
 					if(m.find()) {
-						System.out.println("TIPO:CHAR");
 						ver2=ar.contains("CHAR");
 						if(ver2==false){
 							if(tipo == null) {
@@ -211,7 +207,6 @@ public class lector {
 						}
 					}else{
 						if(m2.find()) {
-							System.out.println("TIPO:VARCHAR");
 							ver3=ar.contains("VARCHAR");
 							if(ver3==false){
 								if(tipo == null) {
@@ -226,7 +221,6 @@ public class lector {
 				     		}
 						}else{
 							if(m3.find()) {
-								System.out.println("TIPO:VAR");
 								ver4=ar.contains("VAR");
 								if(ver4==false){
 									if(tipo == null) {
@@ -241,7 +235,6 @@ public class lector {
 				     			}
 							}else {
 								if(m4.find()) {
-									System.out.println("TIPO:INT");
 									ver5=ar.contains("INT");
 									if(ver5==false){
 										if(tipo == null) {
@@ -256,7 +249,6 @@ public class lector {
 						     		}
 								}else {
 									if(m5.find()) {
-										System.out.println("TIPO:TIME");
 										ver6=ar.contains("TIME");
 										if(ver6==false){
 											if(tipo == null) {
