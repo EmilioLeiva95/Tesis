@@ -35,6 +35,7 @@ public class lector {
 		        List<plantilla> plantillas = new ArrayList();
 		        String linea;
 		        String[] splitlinea = null;
+		        Integer Pfecha = 0;
 		        Integer ocultar = 0;
 		        tabla tablaAux = new tabla();
 		        while((linea=br.readLine())!=null) {
@@ -42,7 +43,7 @@ public class lector {
 		        	validadorRequeridos(splitlinea, plantillas);
 		        	ocultar = validadorOcultos(splitlinea,ocultar);
 		        	tablaAux = ingresarOcultos(splitlinea,plantillas,ocultar,tablaAux);
-		        	validadorFechaHora(splitlinea, plantillas);
+		        	validadorFechaHora(splitlinea, plantillas, Pfecha);
 		        	validadorPedeterminados(splitlinea, plantillas);
 		        }
 		        System.out.println("probando");
@@ -90,9 +91,48 @@ public class lector {
 		// TODO Auto-generated method stub
 	}
 
-	private static void validadorFechaHora(String[] splitlinea, List<plantilla> plantillas) {
-		// TODO Auto-generated method stub
+	private static void validadorFechaHora(String[] splitlinea, List<plantilla> plantillas, Integer Pfecha) {
+		if(splitlinea[0].contains("<FECHA>") && (Pfecha == 1 || Pfecha == 0)) {
+			Pfecha ++;
+		}
+		if(Pfecha == 1) {
+			plantilla plantillaNueva = new plantilla();
+				for(int i = 0; i < splitlinea.length; i++) {
+					if(splitlinea[i].contains("<FECHA>") && splitlinea[i+2].equals("<FECHA>")) {
+					if(plantillas == null) {
+	     				plantillaNueva.setIdplantilla(1);
+	     			}else {
+	     				plantillaNueva.setIdplantilla(plantillas.size()+1);
+	     			}
+					plantillaNueva.setTipo(7);
+	     			plantillaNueva.setDescripcion(splitlinea[i+1]);
+	     			plantillas.add(plantillaNueva);
+	     			i=splitlinea.length;
+			}	
+		}
+		}
+		if(splitlinea[0].contains("<HORA>") && (Pfecha == 1 || Pfecha == 0)) {
+			Pfecha ++;
+		}
+		if(Pfecha == 1) {
+			plantilla plantillaNueva = new plantilla();
+				for(int i = 0; i < splitlinea.length; i++) {
+					if(splitlinea[i].contains("<HORA>") && splitlinea[i+3].equals("<HORA>")) {
+					if(plantillas == null) {
+	     				plantillaNueva.setIdplantilla(1);
+	     			}else {
+	     				plantillaNueva.setIdplantilla(plantillas.size()+1);
+	     			}
+					plantillaNueva.setTipo(8);
+	     			plantillaNueva.setDescripcion(splitlinea[i+1]+" "+splitlinea[i+2]);
+	     			plantillas.add(plantillaNueva);
+	     			i=splitlinea.length;
+			}	
+		}
+		}
+		
 	}
+	
 
 	private static Integer validadorOcultos(String[] splitlinea, Integer ocultar ) {
 		if(splitlinea[0].contains("<OCULTAR>") && (ocultar == 1 || ocultar == 0)) {
