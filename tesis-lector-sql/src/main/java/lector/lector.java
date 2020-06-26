@@ -1,6 +1,7 @@
 package lector;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,35 +17,35 @@ public class lector {
 	      File archivo = null;
 	      FileReader fr = null;
 	      BufferedReader br = null;
+	      lectorScript(archivo,fr,br);
+	      System.out.println("=============FIN PROCESO==========");
+	}
 
-	      
-	      try {
-	         archivo = new File ("./src/main/resources/script/script.sql");
-	         fr = new FileReader (archivo);
-	         br = new BufferedReader(fr);
-	  	     List<tabla> tablas = new ArrayList();
-	  	     List<columna> columnas = new ArrayList();
-	  	     List<tipo> tipo = new ArrayList();
-	  	     List<String> ar = new ArrayList();
-	  	     
-	         // Lectura del fichero
-	         String linea;
-	         String[] splitlinea = null;
-	         while((linea=br.readLine())!=null) {
-	        	columna columnaNueva = new columna();
-	        	splitlinea = linea.split(" ");
-	         	comparadorTablaColumna(splitlinea,tablas,columnas,columnaNueva);
-	         	comparadorLlavePrimaria(splitlinea,columnaNueva);
-	         	comparadorNulidad(splitlinea,columnaNueva);
-	         	comparadorTipoDato(splitlinea,tipo,ar,columnaNueva);
-	         	comparadorLlaveForanea(splitlinea,columnas);
-	         	if(columnaNueva.getIdColumna() != null) {
-	         		columnas.add(columnaNueva);
-	         	}
-	         }
-	         System.out.println("=============FIN PROCESO==========");
-	      }
-	      catch(Exception e){
+	private static void lectorScript(File archivo, FileReader fr, BufferedReader br) {
+		archivo = new File ("./src/main/resources/script/script.sql");
+        try {
+			fr = new FileReader (archivo);
+	        br = new BufferedReader(fr);
+	 	    List<tabla> tablas = new ArrayList();
+	 	    List<columna> columnas = new ArrayList();
+	 	    List<tipo> tipo = new ArrayList();
+	 	    List<String> ar = new ArrayList();
+	        // Lectura del fichero
+	        String linea;
+	        String[] splitlinea = null;
+	        while((linea=br.readLine())!=null) {
+		       	columna columnaNueva = new columna();
+		       	splitlinea = linea.split(" ");
+	        	comparadorTablaColumna(splitlinea,tablas,columnas,columnaNueva);
+	        	comparadorLlavePrimaria(splitlinea,columnaNueva);
+	        	comparadorNulidad(splitlinea,columnaNueva);
+	        	comparadorTipoDato(splitlinea,tipo,ar,columnaNueva);
+	        	comparadorLlaveForanea(splitlinea,columnas);
+	        	if(columnaNueva.getIdColumna() != null) {
+	        		columnas.add(columnaNueva);
+	        	}
+	        }
+        }catch(Exception e){
 	         e.printStackTrace();
 	      }finally{
 	         try{                    
@@ -55,7 +56,7 @@ public class lector {
 	            e2.printStackTrace();
 	         }
 	      }
-	   }
+	}
 
 	private static void comparadorLlaveForanea(String[] splitlinea, List<columna> columnas) {
 		columna columnaForaneaAux = new columna();
@@ -67,14 +68,9 @@ public class lector {
 		String[] nuevaForanea = new String[4];
 		for(int i = 0; i < splitlinea.length; i++) {
      		if(splitlinea[i].contains("ALTER") && splitlinea[i+1].equals("TABLE")) {
-     			System.out.println("=============LLAVE FORANEA==========");
-     			System.out.println("TABLA REFERENCIA: "+splitlinea[i+2].replaceAll("\"", ""));
      			nuevaForanea[0] = splitlinea[i+2].replaceAll("\"", "");
-     			System.out.println("COLUMNA REFERENCIA: "+splitlinea[i+6].replaceAll("\"", "").replaceAll("\\(", "").replaceAll("\\)", ""));
      			nuevaForanea[1] = splitlinea[i+6].replaceAll("\"", "").replaceAll("\\(", "").replaceAll("\\)", "");
-     			System.out.println("TABLA: "+splitlinea[i+8].replaceAll("\"", ""));
      			nuevaForanea[2] = splitlinea[i+8].replaceAll("\"", "");
-     			System.out.println("COLUMNA: "+splitlinea[i+9].replaceAll("\"", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(";", ""));
      			nuevaForanea[3] = splitlinea[i+9].replaceAll("\"", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(";", "");
      			i = splitlinea.length;
      		}
@@ -143,8 +139,6 @@ public class lector {
 		for(int i = 0; i < splitlinea.length; i++) {
 			tabla tablaNueva = new tabla();
      		if(splitlinea[i].equals("TABLE") && splitlinea[i-1].equals("CREATE")) {
-     			System.out.println("========================================="); 
-     			System.out.println("TABLA:"+splitlinea[i+1]);
      			if(tablas == null) {
      				tablaNueva.setIdTabla(1);
      			}else {
@@ -155,8 +149,6 @@ public class lector {
      			i=splitlinea.length;
      		}else {
      			if(splitlinea[i].matches("\"(.*)") && !splitlinea[i-1].equals("TABLE") && !splitlinea[i-2].equals("ALTER") && !splitlinea[i-1].contentEquals("REFERENCES")) {
-	 				System.out.println("----------------------------------------"); 
-	 				System.out.println("COLUMNA:"+splitlinea[i]);
          			if(columnas == null) {
          				columnaNueva.setIdColumna(1);
          			}else {
@@ -173,15 +165,12 @@ public class lector {
 	private static void comparadorTipoDato(String[] splitlinea,List<tipo> tipo,List<String> ar, columna columnaNueva) {
 		String[] tiposDatos= {"LONG","INTEGER","SMALLINT","BIGINT","REAL","DOUBLE","FLOAT",      
 								"DECIMAL","NUMERIC","DATE","TIMESTAMP","BOOLEAN","BIT","SERIAL",};
-		
 		Pattern pattern1 = Pattern.compile("^CHAR.*");
 		Pattern pattern2 = Pattern.compile("^VARCHAR");
 		Pattern pattern3 = Pattern.compile("VAR(?!CHAR)");
 		Pattern pattern4 = Pattern.compile("^INT(?!EGER)");
 		Pattern pattern5 = Pattern.compile("^TIME(?!STAMP)");
 		boolean ver,ver2,ver3,ver4,ver5,ver6;
-	
-		
 		for(int i = 0; i<splitlinea.length; i++) {
 			tipo tipoNuevo = new tipo();
 			Matcher m = pattern1.matcher(splitlinea[i]);
@@ -190,96 +179,96 @@ public class lector {
 			Matcher m4 = pattern4.matcher(splitlinea[i]);
 			Matcher m5 = pattern5.matcher(splitlinea[i]);
 			for(int j = 0; j<tiposDatos.length; j++) {
-				
 				if(splitlinea[i].contains(tiposDatos[j])) {
 					ver=ar.contains(tiposDatos[j]);
-					System.out.println("TIPO:"+tiposDatos[j]);
-					
-		if(ver==false){
-					if(tipo == null) {			
-	     				tipoNuevo.setIdTipo(1);
-	     			}else {	     
-	     				tipoNuevo.setIdTipo(tipo.size()+1);
-	     			}
-					ar.add(tiposDatos[j]);
-	     			tipoNuevo.setDescripcion(tiposDatos[j]);
-	     			tipo.add(tipoNuevo);
-	     			columnaNueva.setTipo(tipoNuevo);
-        			 i=splitlinea.length;
-        			 j=tiposDatos.length;}
-				}else {
-					
+					if(ver==false){
+						if(tipo == null) {			
+							tipoNuevo.setIdTipo(1);
+						}else {	     
+							tipoNuevo.setIdTipo(tipo.size()+1);
+						}
+						ar.add(tiposDatos[j]);
+						tipoNuevo.setDescripcion(tiposDatos[j]);
+						tipo.add(tipoNuevo);
+						columnaNueva.setTipo(tipoNuevo);
+						i=splitlinea.length;
+						j=tiposDatos.length;
+					}
+				}else{
 					if(m.find()) {
 						System.out.println("TIPO:CHAR");
 						ver2=ar.contains("CHAR");
 						if(ver2==false){
-						if(tipo == null) {
-		     				tipoNuevo.setIdTipo(1);
-		     			}else {
-		     				tipoNuevo.setIdTipo(tipo.size()+1);
-		     			}
-						ar.add("CHAR");
-		     			tipoNuevo.setDescripcion("CHAR");
-		     			tipo.add(tipoNuevo);
-		     			columnaNueva.setTipo(tipoNuevo);
+							if(tipo == null) {
+			     				tipoNuevo.setIdTipo(1);
+			     			}else {
+			     				tipoNuevo.setIdTipo(tipo.size()+1);
+			     			}
+							ar.add("CHAR");
+			     			tipoNuevo.setDescripcion("CHAR");
+			     			tipo.add(tipoNuevo);
+			     			columnaNueva.setTipo(tipoNuevo);
 						}
 					}else{
 						if(m2.find()) {
 							System.out.println("TIPO:VARCHAR");
 							ver3=ar.contains("VARCHAR");
 							if(ver3==false){
-							if(tipo == null) {
-			     				tipoNuevo.setIdTipo(1);
-			     			}else {
-			     				tipoNuevo.setIdTipo(tipo.size()+1);
-			     			}
-							ar.add("VARCHAR");
-			     			tipoNuevo.setDescripcion("VARCHAR");
-			     			tipo.add(tipoNuevo);
-			     			columnaNueva.setTipo(tipoNuevo);}
-						}else{
-							if(m3.find()) {
-								System.out.println("TIPO:VAR");
-								ver4=ar.contains("VAR");
-								if(ver4==false){
 								if(tipo == null) {
 				     				tipoNuevo.setIdTipo(1);
 				     			}else {
 				     				tipoNuevo.setIdTipo(tipo.size()+1);
 				     			}
-								ar.add("VAR");
-				     			tipoNuevo.setDescripcion("VAR");
+								ar.add("VARCHAR");
+				     			tipoNuevo.setDescripcion("VARCHAR");
 				     			tipo.add(tipoNuevo);
 				     			columnaNueva.setTipo(tipoNuevo);
+				     		}
+						}else{
+							if(m3.find()) {
+								System.out.println("TIPO:VAR");
+								ver4=ar.contains("VAR");
+								if(ver4==false){
+									if(tipo == null) {
+					     				tipoNuevo.setIdTipo(1);
+					     			}else {
+					     				tipoNuevo.setIdTipo(tipo.size()+1);
+					     			}
+									ar.add("VAR");
+					     			tipoNuevo.setDescripcion("VAR");
+					     			tipo.add(tipoNuevo);
+					     			columnaNueva.setTipo(tipoNuevo);
 				     			}
 							}else {
 								if(m4.find()) {
 									System.out.println("TIPO:INT");
 									ver5=ar.contains("INT");
 									if(ver5==false){
-									if(tipo == null) {
-					     				tipoNuevo.setIdTipo(1);
-					     			}else {
-					     				tipoNuevo.setIdTipo(tipo.size()+1);
-					     			}
-									ar.add("INT");
-					     			tipoNuevo.setDescripcion("INT");
-					     			tipo.add(tipoNuevo);
-					     			columnaNueva.setTipo(tipoNuevo);}
-								}else {
-									if(m5.find()) {
-										System.out.println("TIPO:TIME");
-										ver6=ar.contains("TIME");
-										if(ver6==false){
 										if(tipo == null) {
 						     				tipoNuevo.setIdTipo(1);
 						     			}else {
 						     				tipoNuevo.setIdTipo(tipo.size()+1);
 						     			}
-										ar.add("TIME");
-						     			tipoNuevo.setDescripcion("TIME");
+										ar.add("INT");
+						     			tipoNuevo.setDescripcion("INT");
 						     			tipo.add(tipoNuevo);
-						     			columnaNueva.setTipo(tipoNuevo);}
+						     			columnaNueva.setTipo(tipoNuevo);
+						     		}
+								}else {
+									if(m5.find()) {
+										System.out.println("TIPO:TIME");
+										ver6=ar.contains("TIME");
+										if(ver6==false){
+											if(tipo == null) {
+							     				tipoNuevo.setIdTipo(1);
+							     			}else {
+							     				tipoNuevo.setIdTipo(tipo.size()+1);
+							     			}
+											ar.add("TIME");
+							     			tipoNuevo.setDescripcion("TIME");
+							     			tipo.add(tipoNuevo);
+							     			columnaNueva.setTipo(tipoNuevo);
+										}
 									}else {
 										for(int k=0;k<ar.size();k++) {
 											String aux=ar.get(k);
