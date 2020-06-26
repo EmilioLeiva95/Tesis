@@ -18,6 +18,49 @@ public class lector {
 	      FileReader fr = null;
 	      BufferedReader br = null;
 	      lectorScript(archivo,fr,br);
+	      lectorPlantilla(archivo,fr,br);
+	}
+
+	private static void lectorPlantilla(File archivo, FileReader fr, BufferedReader br) {
+		archivo = new File ("./src/main/resources/script/plantilla.aur");
+		 try {
+				fr = new FileReader (archivo);
+		        br = new BufferedReader(fr);
+		        String linea;
+		        String[] splitlinea = null;
+		        while((linea=br.readLine())!=null) {
+		        	validadorRequeridos(splitlinea);
+		        	validadorOcultos(splitlinea);
+		        	validadorFechaHora(splitlinea);
+		        	validadorPedeterminados(splitlinea);
+		        }
+		 }catch(Exception e){
+	         e.printStackTrace();
+	      }finally{
+	         try{                    
+	            if( null != fr ){   
+	               fr.close();     
+	            }                  
+	         }catch (Exception e2){ 
+	            e2.printStackTrace();
+	         }
+	      }
+	}
+
+	private static void validadorPedeterminados(String[] splitlinea) {
+		// TODO Auto-generated method stub
+	}
+
+	private static void validadorFechaHora(String[] splitlinea) {
+		// TODO Auto-generated method stub
+	}
+
+	private static void validadorOcultos(String[] splitlinea) {
+		// TODO Auto-generated method stub
+	}
+
+	private static void validadorRequeridos(String[] splitlinea) {
+		// TODO Auto-generated method stub
 	}
 
 	private static void lectorScript(File archivo, FileReader fr, BufferedReader br) {
