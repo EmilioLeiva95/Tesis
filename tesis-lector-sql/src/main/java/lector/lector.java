@@ -67,7 +67,7 @@ public class lector {
 	private static columna ingresarColumnaPredeterminado(String[] splitlinea, Integer predeterminados, columna columnaAux, tabla tablaAux) {
 		if(predeterminados == 1 && splitlinea.length >= 3) {
 			if(splitlinea[splitlinea.length-3].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
-				if(!splitlinea[splitlinea.length-3].equals("<COLUMNA>") ||!splitlinea[splitlinea.length-1].equals("<COLUMNA>")) {
+				if(!splitlinea[splitlinea.length-3].equals("<COLUMNA>") || !splitlinea[splitlinea.length-1].equals("<COLUMNA>")) {
 	 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
 	 			 }
 				for(columna i : columnasGlobal) {
@@ -76,6 +76,9 @@ public class lector {
 	 				 }
 	 			 }
 			}
+			if(splitlinea[splitlinea.length-2].contains("<COLUMNA>") || !splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
+ 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+ 			 }
 			return columnaAux;
 		}
 		return null;
@@ -118,7 +121,7 @@ public class lector {
 		if(predeterminados == 1) {
 			if(splitlinea.length >= 3) {
 				if(splitlinea[splitlinea.length-3].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
-					if(!splitlinea[splitlinea.length-3].equals("<TABLA>") ||!splitlinea[splitlinea.length-1].equals("<TABLA>")) {
+					if(!splitlinea[splitlinea.length-3].equals("<TABLA>") || !splitlinea[splitlinea.length-1].equals("<TABLA>")) {
 		 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
 		 			 }  
 					for(tabla i : tablasGlobal) {
@@ -127,6 +130,9 @@ public class lector {
 		 				 }
 		 			 }
 		 		}
+				if(splitlinea[splitlinea.length-2].contains("<TABLA>") || !splitlinea[splitlinea.length-1].contains("<TABLA>")) {
+	 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+	 			 }
 			}
 		}
 		return tablaAux;
@@ -151,7 +157,7 @@ public class lector {
 			plantillaNueva.setIdplantilla(plantillas.size());
 			if(splitlinea.length >= 3) {
 				if(splitlinea[splitlinea.length-3].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
-					if(!splitlinea[splitlinea.length-3].equals("<TABLA>") ||!splitlinea[splitlinea.length-1].equals("<TABLA>")) {
+					if(!splitlinea[splitlinea.length-3].equals("<TABLA>") || !splitlinea[splitlinea.length-1].equals("<TABLA>")) {
 		 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
 		 			 } 
 					for(tabla i : tablasGlobal) {
@@ -160,8 +166,11 @@ public class lector {
 		 				 }
 		 			 }
 		 		}
+				if(splitlinea[splitlinea.length-2].contains("<TABLA>") || !splitlinea[splitlinea.length-1].contains("<TABLA>")) {
+	 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+	 			 }
 				if(splitlinea[splitlinea.length-3].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
-					if(!splitlinea[splitlinea.length-3].equals("<COLUMNA>") ||!splitlinea[splitlinea.length-1].equals("<COLUMNA>")) {
+					if(!splitlinea[splitlinea.length-3].equals("<COLUMNA>") || !splitlinea[splitlinea.length-1].equals("<COLUMNA>")) {
 		 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
 		 			 }
 					for(columna i : columnasGlobal) {
@@ -173,6 +182,9 @@ public class lector {
 		 				 }
 		 			 }
 				}
+				if(splitlinea[splitlinea.length-2].contains("<COLUMNA>") || !splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
+	 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+	 			 }
 			}
 		}
 		return tablaAux;
