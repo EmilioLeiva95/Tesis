@@ -43,7 +43,7 @@ public class lector {
 		        	validadorRequeridos(splitlinea, plantillas);
 		        	ocultar = validadorOcultos(splitlinea,ocultar);
 		        	tablaAux = ingresarOcultos(splitlinea,plantillas,ocultar,tablaAux);
-		        	validadorFechaHora(splitlinea, plantillas, Pfecha);
+		        	Pfecha=validadorFechaHora(splitlinea, plantillas, Pfecha);
 		        	validadorPedeterminados(splitlinea, plantillas);
 		        }
 		        System.out.println("probando");
@@ -91,46 +91,104 @@ public class lector {
 		// TODO Auto-generated method stub
 	}
 
-	private static void validadorFechaHora(String[] splitlinea, List<plantilla> plantillas, Integer Pfecha) {
-		if(splitlinea[0].contains("<FECHA>") && (Pfecha == 1 || Pfecha == 0)) {
-			Pfecha ++;
-		}
-		if(Pfecha == 1) {
+	private static Integer validadorFechaHora(String[] splitlinea, List<plantilla> plantillas, Integer Pfecha) {
+		Integer tipoF=0;
+		Integer tipoH=0;
+		String[] tiposFecha= {"DD-MM-YYYY","MM-DD-YYYY","DD-MM-YY","MM-DD-YY","DD-MMM-YYYY","MMM-DD-YYYY","DD-MMM-YY",
+				"MMM-DD-YY","DD/MM/YYYY","MM/DD/YYYY","DD/MM/YY","MM/DD/YY","DD/MMM/YYYY","MMM/DD/YYYY","DD/MMM/YY","MMM/DD/YY"};
+		String[] tiposHora= {"HH:MM","HH:MM:SS","HH:MM_A","HH:MM:SS_A"};
+		if(splitlinea[0].contains("<FECHA>") && Pfecha == 0) {
+			 
 			plantilla plantillaNueva = new plantilla();
 				for(int i = 0; i < splitlinea.length; i++) {
 					if(splitlinea[i].contains("<FECHA>") && splitlinea[i+2].equals("<FECHA>")) {
-					if(plantillas == null) {
-	     				plantillaNueva.setIdplantilla(1);
-	     			}else {
-	     				plantillaNueva.setIdplantilla(plantillas.size()+1);
-	     			}
-					plantillaNueva.setTipo(7);
-	     			plantillaNueva.setDescripcion(splitlinea[i+1]);
-	     			plantillas.add(plantillaNueva);
-	     			i=splitlinea.length;
-			}	
+						for(int j = 0; j<tiposFecha.length; j++) {
+						if(splitlinea[1].contentEquals(tiposFecha[j])) {
+							if(plantillas == null) {
+			     				plantillaNueva.setIdplantilla(1);
+			     			}else {
+			     				plantillaNueva.setIdplantilla(plantillas.size()+1);
+			     			}
+							plantillaNueva.setTipo(7);
+			     			plantillaNueva.setDescripcion(splitlinea[i+1]);
+			     			plantillas.add(plantillaNueva);
+			     			i=splitlinea.length;
+			     			Pfecha = 1;	
+			     			tipoF=1;
+						}
+						}
+						if(tipoF==0) {
+							System.out.println("ERROR EN ETIQUETA DE FECHA, INGRESE UN FORMATO DE FECHA VALIDO");
+							break;
+						}
+						
+						
+					
+	     			
+	     			
+			}else {
+				System.out.println("ERROR EN ETIQUETA DE FECHA, VERIFIQUE SI LA ETIQUETA DE SALIDA DE FECHA ESTA BIEN ESCRITA O SI HAY VALOR DE FECHA");
+				break;
+			}
 		}
+		}else {
+			if(splitlinea[0].contains("<FECHA>") && Pfecha == 1) {
+				System.out.println("EL SEGUNDO REGISTRO DE FECHA HA SIDO IGNORADO");
+			
+			}
+		
 		}
 		if(splitlinea[0].contains("<HORA>") && (Pfecha == 1 || Pfecha == 0)) {
-			Pfecha ++;
-		}
-		if(Pfecha == 1) {
+			
+	
+		if(Pfecha == 0) {
+			System.out.println("NO HAY REGISTRO DE FECHA, SE TOMARAN LAS FECHAS POR DEFECTO");
+			}
+		
 			plantilla plantillaNueva = new plantilla();
 				for(int i = 0; i < splitlinea.length; i++) {
-					if(splitlinea[i].contains("<HORA>") && splitlinea[i+3].equals("<HORA>")) {
-					if(plantillas == null) {
-	     				plantillaNueva.setIdplantilla(1);
-	     			}else {
-	     				plantillaNueva.setIdplantilla(plantillas.size()+1);
-	     			}
-					plantillaNueva.setTipo(8);
-	     			plantillaNueva.setDescripcion(splitlinea[i+1]+" "+splitlinea[i+2]);
-	     			plantillas.add(plantillaNueva);
-	     			i=splitlinea.length;
-			}	
+					if(splitlinea[i].contains("<HORA>") && splitlinea[i+2].equals("<HORA>")) {
+						for(int j = 0; j<tiposHora.length; j++) {
+							if(splitlinea[1].contentEquals(tiposHora[j])) {
+								if(plantillas == null) {
+				     				plantillaNueva.setIdplantilla(1);
+				     			}else {
+				     				plantillaNueva.setIdplantilla(plantillas.size()+1);
+				     			}
+								plantillaNueva.setTipo(8);
+				     			plantillaNueva.setDescripcion(splitlinea[i+1]);
+				     			plantillas.add(plantillaNueva);
+				     			i=splitlinea.length;
+				     			Pfecha = 2;	
+				     			tipoH=1;
+							}	
+							}
+						if(tipoH==0) {
+							System.out.println("ERROR EN ETIQUETA DE HORA, INGRESE UN FORMATO DE HORA VALIDO");
+							break;
+						}
+			
+			}else {
+				System.out.println("ERROR EN ETIQUETA DE HORA, VERIFIQUE SI LA ETIQUETA DE SALIDA DE FECHA ESTA BIEN ESCRITA O SI HAY VALOR DE HORA");
+				break;
+			}
 		}
-		}
+		}else {
+			if(splitlinea[0].contains("<HORA>") && Pfecha == 2) {
+				System.out.println("EL SEGUNDO REGISTRO DE HORA HA SIDO IGNORADO");
+			
+			}
 		
+		}
+		if(splitlinea[0].contains("<PREDETERMINADO>") && Pfecha == 0) {
+			System.out.println("NO HAY REGISTRO DE FECHA NI DE HORA, SE TOMARAN LAS HORAS Y FECHAS POR DEFECTO");
+		
+		}
+		if(splitlinea[0].contains("<PREDETERMINADO>") && Pfecha == 1) {
+			System.out.println("NO HAY REGISTRO DE HORA, SE TOMARAN LAS HORAS POR DEFECTO");
+		Pfecha=10;
+		}
+		return Pfecha;
 	}
 	
 
