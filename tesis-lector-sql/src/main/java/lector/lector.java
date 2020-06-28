@@ -13,8 +13,6 @@ import objetos.columna;
 import objetos.tipo;
 import objetos.plantilla;
 
-
-
 public class lector {
 	static List<tabla> tablasGlobal = new ArrayList();
 	static List<columna> columnasGlobal = new ArrayList();
@@ -37,13 +35,19 @@ public class lector {
 		        String[] splitlinea = null;
 		        Integer Pfecha = 0;
 		        Integer ocultar = 0;
+		        Integer predeterminados = 0;
 		        tabla tablaAux = new tabla();
+		        columna columnaAux = new columna();
 		        while((linea=br.readLine())!=null) {
 		        	splitlinea = linea.split(" ");
 		        	validadorRequeridos(splitlinea, plantillas);
 		        	ocultar = validadorOcultos(splitlinea,ocultar);
 		        	tablaAux = ingresarOcultos(splitlinea,plantillas,ocultar,tablaAux);
 		        	validadorFechaHora(splitlinea, plantillas, Pfecha);
+		        	predeterminados = validadorPredeterminados(splitlinea,predeterminados);
+		        	tablaAux = ingresarTablaPredeterminado(splitlinea,predeterminados,tablaAux);
+		        	columnaAux = ingresarColumnaPredeterminado(splitlinea,predeterminados,columnaAux,tablaAux);
+		        	ingresarPredeterminado(splitlinea,predeterminados,plantillas,columnaAux,tablaAux);
 		        	validadorPedeterminados(splitlinea, plantillas);
 		        }
 		        System.out.println("probando");
@@ -59,6 +63,87 @@ public class lector {
 	         }
 	      }
 	}
+	
+	private static columna ingresarColumnaPredeterminado(String[] splitlinea, Integer predeterminados, columna columnaAux, tabla tablaAux) {
+		if(predeterminados == 1 && splitlinea.length >= 3) {
+			if(splitlinea[splitlinea.length-3].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
+				if(!splitlinea[splitlinea.length-3].equals("<COLUMNA>") ||!splitlinea[splitlinea.length-1].equals("<COLUMNA>")) {
+	 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+	 			 }
+				for(columna i : columnasGlobal) {
+	 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2]) && i.getTabla().getDescripcion().equals(tablaAux.getDescripcion())) {
+	 					columnaAux = i;
+	 				 }
+	 			 }
+			}
+			return columnaAux;
+		}
+		return null;
+	}
+	
+	private static void ingresarPredeterminado(String[] splitlinea, Integer predeterminados, List<plantilla> plantillas, columna columnaAux, tabla tablaAux) {
+		if(predeterminados == 1) {
+			Integer contador = 0;
+			String aux = "";
+			plantilla plantillaNueva = new plantilla();
+			plantillaNueva.setIdplantilla(plantillas.size());
+			for(int i = 0; i < splitlinea.length; i++) {
+				if(contador == 1 && !splitlinea[i].equals("<D>")) {
+					aux = aux+splitlinea[i]+" ";
+				}
+				if(contador == 2) {
+					plantillaNueva.setAlmacenar(aux);
+					contador = contador+1;
+					aux = "";
+				}
+				if(contador == 3) {
+					aux = aux+splitlinea[i]+" ";
+				}
+				if(contador == 3 && splitlinea[splitlinea.length-1].equals("<D>")) {
+					plantillaNueva.setMostrar(aux);
+					plantillaNueva.setTabla(tablaAux);
+					plantillaNueva.setColumna(columnaAux);
+					plantillaNueva.setTipo(9);
+					plantillas.add(plantillaNueva);
+					break;
+				}
+				if(splitlinea[i].equals("<D>")) {
+					contador=contador+1;
+				}
+			}
+		}
+	}
+
+	private static tabla ingresarTablaPredeterminado(String[] splitlinea, Integer predeterminados, tabla tablaAux) {
+		if(predeterminados == 1) {
+			if(splitlinea.length >= 3) {
+				if(splitlinea[splitlinea.length-3].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
+					if(!splitlinea[splitlinea.length-3].equals("<TABLA>") ||!splitlinea[splitlinea.length-1].equals("<TABLA>")) {
+		 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+		 			 }  
+					for(tabla i : tablasGlobal) {
+		 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2])) {
+		 					tablaAux = i;
+		 				 }
+		 			 }
+		 		}
+			}
+		}
+		return tablaAux;
+	}
+
+	private static Integer validadorPredeterminados(String[] splitlinea, Integer predeterminados) {
+		if(splitlinea[0].contains("<PREDETERMINADO>")) {
+			predeterminados=predeterminados+1;
+			if(splitlinea.length > 1 || !splitlinea[0].equals("<PREDETERMINADO>")) {
+ 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA PREDETERMINADO");
+ 			 }
+		}
+		if(predeterminados == 3) {
+			System.out.println("ERROR: INGRESO UN TERCER PREDETERMINADO");
+		}
+		return predeterminados;
+	}
 
 	private static tabla ingresarOcultos(String[] splitlinea, List<plantilla> plantillas, Integer ocultar,tabla tablaAux) {
 		if(ocultar == 1) {
@@ -66,13 +151,19 @@ public class lector {
 			plantillaNueva.setIdplantilla(plantillas.size());
 			if(splitlinea.length >= 3) {
 				if(splitlinea[splitlinea.length-3].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
-		 			 for(tabla i : tablasGlobal) {
+					if(!splitlinea[splitlinea.length-3].equals("<TABLA>") ||!splitlinea[splitlinea.length-1].equals("<TABLA>")) {
+		 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+		 			 } 
+					for(tabla i : tablasGlobal) {
 		 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2])) {
 		 					tablaAux = i;
 		 				 }
 		 			 }
 		 		}
 				if(splitlinea[splitlinea.length-3].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
+					if(!splitlinea[splitlinea.length-3].equals("<COLUMNA>") ||!splitlinea[splitlinea.length-1].equals("<COLUMNA>")) {
+		 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+		 			 }
 					for(columna i : columnasGlobal) {
 		 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2]) && i.getTabla().getDescripcion().equals(tablaAux.getDescripcion())) {
 		 					plantillaNueva.setTabla(tablaAux);
@@ -135,9 +226,15 @@ public class lector {
 	
 
 	private static Integer validadorOcultos(String[] splitlinea, Integer ocultar ) {
-		if(splitlinea[0].contains("<OCULTAR>") && (ocultar == 1 || ocultar == 0)) {
+		if(splitlinea[0].contains("<OCULTAR>")) {
  			 ocultar=ocultar+1;
+ 			 if(splitlinea.length > 1 || !splitlinea[0].equals("<OCULTAR>")) {
+ 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA OCULTAR");
+ 			 }
  		}
+		if(ocultar == 3) {
+			System.out.println("ERROR: INGRESO UN TERCER OCULTAR");
+		}
 		return ocultar;
 	}
 
