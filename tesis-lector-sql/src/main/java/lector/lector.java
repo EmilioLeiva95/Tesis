@@ -68,7 +68,7 @@ public class lector {
 		if(predeterminados == 1 && splitlinea.length >= 3) {
 			if(splitlinea[splitlinea.length-3].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
 				if(!splitlinea[splitlinea.length-3].equals("<COLUMNA>") || !splitlinea[splitlinea.length-1].equals("<COLUMNA>")) {
-	 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+	 				System.out.println("ERROR: 2 SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
 	 			 }
 				for(columna i : columnasGlobal) {
 	 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2]) && i.getTabla().getDescripcion().equals(tablaAux.getDescripcion())) {
@@ -76,8 +76,8 @@ public class lector {
 	 				 }
 	 			 }
 			}
-			if(splitlinea[splitlinea.length-2].contains("<COLUMNA>") || !splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
- 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+			if(splitlinea[splitlinea.length-2].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
+ 				System.out.println("ERROR: 3 SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
  			 }
 			return columnaAux;
 		}
@@ -108,10 +108,16 @@ public class lector {
 					plantillaNueva.setColumna(columnaAux);
 					plantillaNueva.setTipo(9);
 					plantillas.add(plantillaNueva);
-					break;
+					contador = contador+1;
 				}
-				if(splitlinea[i].equals("<D>")) {
+				if(contador == 4) {
+					System.out.println("ERROR: 4 SINTAXIS INCORRECTA EN ETIQUETA D ");
+				}
+				if(splitlinea[i].equals("<D>") && splitlinea.length <= i+1) {
 					contador=contador+1;
+					if(splitlinea[i-1].equals("<D>") ) {
+						System.out.println("ERROR: 5 SINTAXIS INCORRECTA EN ETIQUETA D ");
+					}
 				}
 			}
 		}
@@ -122,7 +128,7 @@ public class lector {
 			if(splitlinea.length >= 3) {
 				if(splitlinea[splitlinea.length-3].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
 					if(!splitlinea[splitlinea.length-3].equals("<TABLA>") || !splitlinea[splitlinea.length-1].equals("<TABLA>")) {
-		 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+		 				System.out.println("ERROR: 6 SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
 		 			 }  
 					for(tabla i : tablasGlobal) {
 		 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2])) {
@@ -130,8 +136,8 @@ public class lector {
 		 				 }
 		 			 }
 		 		}
-				if(splitlinea[splitlinea.length-2].contains("<TABLA>") || !splitlinea[splitlinea.length-1].contains("<TABLA>")) {
-	 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+				if(splitlinea[splitlinea.length-2].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
+	 				System.out.println("ERROR: 7 SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
 	 			 }
 			}
 		}
@@ -142,11 +148,11 @@ public class lector {
 		if(splitlinea[0].contains("<PREDETERMINADO>")) {
 			predeterminados=predeterminados+1;
 			if(splitlinea.length > 1 || !splitlinea[0].equals("<PREDETERMINADO>")) {
- 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA PREDETERMINADO");
+ 				System.out.println("ERROR: 8 SINTAXIS INCORRECTA EN ETIQUETA PREDETERMINADO");
  			 }
 		}
 		if(predeterminados == 3) {
-			System.out.println("ERROR: INGRESO UN TERCER PREDETERMINADO");
+			System.out.println("ERROR: 14 INGRESO UN TERCER PREDETERMINADO");
 		}
 		return predeterminados;
 	}
@@ -158,7 +164,7 @@ public class lector {
 			if(splitlinea.length >= 3) {
 				if(splitlinea[splitlinea.length-3].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
 					if(!splitlinea[splitlinea.length-3].equals("<TABLA>") || !splitlinea[splitlinea.length-1].equals("<TABLA>")) {
-		 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+		 				System.out.println("ERROR: 9 SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
 		 			 } 
 					for(tabla i : tablasGlobal) {
 		 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2])) {
@@ -166,12 +172,12 @@ public class lector {
 		 				 }
 		 			 }
 		 		}
-				if(splitlinea[splitlinea.length-2].contains("<TABLA>") || !splitlinea[splitlinea.length-1].contains("<TABLA>")) {
-	 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+				if(splitlinea[splitlinea.length-2].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
+	 				System.out.println("ERROR: 10 SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
 	 			 }
 				if(splitlinea[splitlinea.length-3].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
 					if(!splitlinea[splitlinea.length-3].equals("<COLUMNA>") || !splitlinea[splitlinea.length-1].equals("<COLUMNA>")) {
-		 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+		 				System.out.println("ERROR: 11 SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
 		 			 }
 					for(columna i : columnasGlobal) {
 		 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2]) && i.getTabla().getDescripcion().equals(tablaAux.getDescripcion())) {
@@ -182,8 +188,8 @@ public class lector {
 		 				 }
 		 			 }
 				}
-				if(splitlinea[splitlinea.length-2].contains("<COLUMNA>") || !splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
-	 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+				if(splitlinea[splitlinea.length-2].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
+	 				System.out.println("ERROR: 12 SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
 	 			 }
 			}
 		}
@@ -241,11 +247,11 @@ public class lector {
 		if(splitlinea[0].contains("<OCULTAR>")) {
  			 ocultar=ocultar+1;
  			 if(splitlinea.length > 1 || !splitlinea[0].equals("<OCULTAR>")) {
- 				System.out.println("ERROR: SINTAXIS INCORRECTA EN ETIQUETA OCULTAR");
+ 				System.out.println("ERROR: 1 SINTAXIS INCORRECTA EN ETIQUETA OCULTAR");
  			 }
  		}
 		if(ocultar == 3) {
-			System.out.println("ERROR: INGRESO UN TERCER OCULTAR");
+			System.out.println("ERROR: 13 INGRESO UN TERCER OCULTAR");
 		}
 		return ocultar;
 	}
