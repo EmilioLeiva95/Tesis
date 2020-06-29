@@ -21,8 +21,8 @@
     <TABLA> contrato <TABLA>
     <COLUMNA> id_contrato <COLUMNA>
 <OCULTAR>
-<FECHA> DD-MM-YYY <FECHA>
-<HORA> HH:MM A <HORA>
+<FECHA> DD-MM-YYYY <FECHA>
+<HORA> HH:MM_A <HORA>
 <PREDETERMINADO>
     <TABLA> cliente <TABLA>
     <COLUMNA> lista_negra <COLUMNA>
