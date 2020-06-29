@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import objetos.tabla;
+import objetos.Netbeanstopostgres;
 import objetos.columna;
 import objetos.tipo;
 import objetos.plantilla;
@@ -16,10 +17,12 @@ public class lector {
 	static List<tabla> tablasGlobal = new ArrayList();
 	static List<columna> columnasGlobal = new ArrayList();
 	static List<tipo> tipoGlobal = new ArrayList();
+	static Netbeanstopostgres con = new Netbeanstopostgres();
 	public static void main(String [] arg) {
 	      File archivo = null;
 	      FileReader fr = null;
 	      BufferedReader br = null;
+	      con.connect();
 	      lectorScript(archivo,fr,br);
 	      lectorPlantilla(archivo,fr,br);
 	}
@@ -581,4 +584,7 @@ public class lector {
 		}   
 	}
 }
+
+
+
 
