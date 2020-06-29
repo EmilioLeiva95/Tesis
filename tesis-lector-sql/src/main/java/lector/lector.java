@@ -35,6 +35,7 @@ public class lector {
 		        List<plantilla> plantillas = new ArrayList();
 		        String linea;
 		        String[] splitlinea = null;
+		        Integer BPredet = 0;
 		        Integer Pfecha = 0;
 		        Integer ocultar = 0;
 		        tabla tablaAux = new tabla();
@@ -44,7 +45,7 @@ public class lector {
 		        	ocultar = validadorOcultos(splitlinea,ocultar);
 		        	tablaAux = ingresarOcultos(splitlinea,plantillas,ocultar,tablaAux);
 		        	Pfecha=validadorFechaHora(splitlinea, plantillas, Pfecha);
-		        	validadorPedeterminados(splitlinea, plantillas);
+		        	BPredet = validadorPredeterminados(splitlinea, plantillas, BPredet);
 		        }
 		        System.out.println("probando");
 		 }catch(Exception e){
@@ -87,8 +88,140 @@ public class lector {
 		return tablaAux;
 	}
 
-	private static void validadorPedeterminados(String[] splitlinea, List<plantilla> plantillas) {
-		// TODO Auto-generated method stub
+	private static Integer validadorPredeterminados(String[] splitlinea, List<plantilla> plantillas, Integer BPredet) {
+//		Pattern pattern1 = Pattern.compile("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b");
+//		Matcher m = pattern1.matcher(splitlinea[2]);
+		if(splitlinea[0].contains("<BD>") && BPredet == 0) {
+			plantilla plantillaNueva = new plantilla();
+				for(int i = 0; i < splitlinea.length; i++) {
+					if((splitlinea.length==3)&&(splitlinea[i].contains("<BD>") && splitlinea[i+2].equals("<BD>"))) {				
+							if(plantillas == null) {
+			     				plantillaNueva.setIdplantilla(1);
+			     			}else {
+			     				plantillaNueva.setIdplantilla(plantillas.size()+1);
+			     			}
+							plantillaNueva.setTipo(1);
+			     			plantillaNueva.setDescripcion(splitlinea[i+1]);
+			     			plantillas.add(plantillaNueva);
+			     			i=splitlinea.length;
+			     			BPredet = 1;				     				
+			}else {
+				System.out.println("ERROR EN ETIQUETA DE BASE DE DATOS, VERIFIQUE SI LA ETIQUETA DE <BD> ESTA BIEN ESCRITA ESTA BIEN ESCRITA O SI HAY VALOR DE BASE DE DATOS");
+				System.exit(0);
+			}
+		}
+		}else {
+			if(splitlinea[0].contains("<BD>") && BPredet != 0) {
+				System.out.println("ERROR EN ETIQUETA DUPLICADA DE BASE DE DATOS");
+				System.exit(0); 
+			}
+		}
+		
+		if(splitlinea[0].contains("<CONTRA>") && BPredet == 1) {
+			plantilla plantillaNueva = new plantilla();
+				for(int i = 0; i < splitlinea.length; i++) {
+					if((splitlinea.length==3)&&splitlinea[i].contains("<CONTRA>") && splitlinea[i+2].equals("<CONTRA>")) {				
+							if(plantillas == null) {
+			     				plantillaNueva.setIdplantilla(1);
+			     			}else {
+			     				plantillaNueva.setIdplantilla(plantillas.size()+1);
+			     			}
+							plantillaNueva.setTipo(2);
+			     			plantillaNueva.setDescripcion(splitlinea[i+1]);
+			     			plantillas.add(plantillaNueva);
+			     			i=splitlinea.length;
+			     			BPredet = 2;				     				
+			}else {
+				System.out.println("ERROR EN ETIQUETA DE CONTRASE&tilde;A DE BASE DE DATOS, VERIFIQUE SI LA ETIQUETA DE <CONTRA> ESTA BIEN ESCRITA O SI HAY VALOR DE CONTRASE&tilde;A DE BASE DE DATOS");
+				System.exit(0);
+			}
+		}
+		}else {
+			if(splitlinea[0].contains("<CONTRA>") && BPredet != 1) {
+				System.out.println("ERROR EN ETIQUETA DUPLICADA DE CONTRASE&tilde;A DE BASE DE DATOS");
+				System.exit(0); 
+			}
+		}
+		
+		if(splitlinea[0].contains("<USUARIO>") && BPredet == 2) {
+			plantilla plantillaNueva = new plantilla();
+				for(int i = 0; i < splitlinea.length; i++) {
+					if(splitlinea[i].contains("<USUARIO>") && splitlinea[i+2].equals("<USUARIO>")) {				
+							if(plantillas == null) {
+			     				plantillaNueva.setIdplantilla(1);
+			     			}else {
+			     				plantillaNueva.setIdplantilla(plantillas.size()+1);
+			     			}
+							plantillaNueva.setTipo(3);
+			     			plantillaNueva.setDescripcion(splitlinea[i+1]);
+			     			plantillas.add(plantillaNueva);
+			     			i=splitlinea.length;
+			     			BPredet = 3;				     				
+			}else {
+				System.out.println("ERROR EN ETIQUETA DE USUARIO DE BASE DE DATOS, VERIFIQUE SI LA ETIQUETA DE <USUARIO> ESTA BIEN ESCRITA O SI HAY VALOR DE USUARIO DE BASE DE DATOS");
+				System.exit(0);
+			}
+		}
+		}else {
+			if(splitlinea[0].contains("<USUARIO>") && BPredet != 2) {
+				System.out.println("ERROR EN ETIQUETA DUPLICADA DE USUARIO DE BASE DE DATOS");
+				System.exit(0); 
+			}
+		}
+		
+		if(splitlinea[0].contains("<IP>") && BPredet == 3) {
+			plantilla plantillaNueva = new plantilla();
+				for(int i = 0; i < splitlinea.length; i++) {
+					if((splitlinea.length==3)&&splitlinea[i].contains("<IP>") && splitlinea[i+2].equals("<IP>")) {				
+							if(plantillas == null) {
+			     				plantillaNueva.setIdplantilla(1);
+			     			}else {
+			     				plantillaNueva.setIdplantilla(plantillas.size()+1);
+			     			}
+							plantillaNueva.setTipo(4);
+			     			plantillaNueva.setDescripcion(splitlinea[i+1]);
+			     			plantillas.add(plantillaNueva);
+			     			i=splitlinea.length;
+			     			BPredet = 4;				     				
+			}else {
+				System.out.println("ERROR EN ETIQUETA DE IP DE CONEXION DE BASE DE DATOS, VERIFIQUE SI LA ETIQUETA DE <IP> ESTA BIEN ESCRITA O SI HAY VALOR DE IP DE CONEXION DE BASE DE DATOS");
+				System.exit(0);
+			}
+		}
+		}else {
+			if(splitlinea[0].contains("<IP>") && BPredet != 3) {
+				System.out.println("ERROR EN ETIQUETA DUPLICADA DE IP DE CONEXION DE BASE DE DATOS");
+				System.exit(0); 
+			}
+		}
+		
+		if(splitlinea[0].contains("<PUERTO>") && BPredet == 4) {
+			plantilla plantillaNueva = new plantilla();
+				for(int i = 0; i < splitlinea.length; i++) {
+					if((splitlinea.length==3)&&splitlinea[i].contains("<PUERTO>") && splitlinea[i+2].equals("<PUERTO>")) {				
+							if(plantillas == null) {
+			     				plantillaNueva.setIdplantilla(1);
+			     			}else {
+			     				plantillaNueva.setIdplantilla(plantillas.size()+1);
+			     			}
+							plantillaNueva.setTipo(5);
+			     			plantillaNueva.setDescripcion(splitlinea[i+1]);
+			     			plantillas.add(plantillaNueva);
+			     			i=splitlinea.length;
+			     			BPredet = 4;				     				
+			}else {
+				System.out.println("ERROR EN ETIQUETA DE PUERTO DE CONEXION DE BASE DE DATOS, VERIFIQUE SI LA ETIQUETA DE <PUERRTO> ESTA BIEN ESCRITA O SI HAY VALOR DE PUERTO DE CONEXION DE BASE DE DATOS");
+				System.exit(0);
+			}
+		}
+		}else {
+			if(splitlinea[0].contains("<PUERTO>") && BPredet != 4) {
+				System.out.println("ERROR EN ETIQUETA DUPLICADA DE PUERTO DE CONEXION DE BASE DE DATOS");
+				System.exit(0); 
+			}
+		}
+		
+		return BPredet;
 	}
 
 	private static Integer validadorFechaHora(String[] splitlinea, List<plantilla> plantillas, Integer Pfecha) {
@@ -101,7 +234,7 @@ public class lector {
 			 
 			plantilla plantillaNueva = new plantilla();
 				for(int i = 0; i < splitlinea.length; i++) {
-					if(splitlinea[i].contains("<FECHA>") && splitlinea[i+2].equals("<FECHA>")) {
+					if((splitlinea.length==3)&&splitlinea[i].contains("<FECHA>") && splitlinea[i+2].equals("<FECHA>")) {
 						for(int j = 0; j<tiposFecha.length; j++) {
 						if(splitlinea[1].contentEquals(tiposFecha[j])) {
 							if(plantillas == null) {
@@ -120,12 +253,7 @@ public class lector {
 						if(tipoF==0) {
 							System.out.println("ERROR EN ETIQUETA DE FECHA, INGRESE UN FORMATO DE FECHA VALIDO");
 							break;
-						}
-						
-						
-					
-	     			
-	     			
+						}		
 			}else {
 				System.out.println("ERROR EN ETIQUETA DE FECHA, VERIFIQUE SI LA ETIQUETA DE SALIDA DE FECHA ESTA BIEN ESCRITA O SI HAY VALOR DE FECHA");
 				break;
@@ -133,10 +261,8 @@ public class lector {
 		}
 		}else {
 			if(splitlinea[0].contains("<FECHA>") && Pfecha == 1) {
-				System.out.println("EL SEGUNDO REGISTRO DE FECHA HA SIDO IGNORADO");
-			
+				System.out.println("EL SEGUNDO REGISTRO DE FECHA HA SIDO IGNORADO");	
 			}
-		
 		}
 		if(splitlinea[0].contains("<HORA>") && (Pfecha == 1 || Pfecha == 0)) {
 			
@@ -147,7 +273,7 @@ public class lector {
 		
 			plantilla plantillaNueva = new plantilla();
 				for(int i = 0; i < splitlinea.length; i++) {
-					if(splitlinea[i].contains("<HORA>") && splitlinea[i+2].equals("<HORA>")) {
+					if((splitlinea.length==3)&&splitlinea[i].contains("<HORA>") && splitlinea[i+2].equals("<HORA>")) {
 						for(int j = 0; j<tiposHora.length; j++) {
 							if(splitlinea[1].contentEquals(tiposHora[j])) {
 								if(plantillas == null) {
@@ -175,10 +301,8 @@ public class lector {
 		}
 		}else {
 			if(splitlinea[0].contains("<HORA>") && Pfecha == 2) {
-				System.out.println("EL SEGUNDO REGISTRO DE HORA HA SIDO IGNORADO");
-			
-			}
-		
+				System.out.println("EL SEGUNDO REGISTRO DE HORA HA SIDO IGNORADO");		
+			}	
 		}
 		if(splitlinea[0].contains("<PREDETERMINADO>") && Pfecha == 0) {
 			System.out.println("NO HAY REGISTRO DE FECHA NI DE HORA, SE TOMARAN LAS HORAS Y FECHAS POR DEFECTO");
@@ -191,14 +315,12 @@ public class lector {
 		return Pfecha;
 	}
 	
-
 	private static Integer validadorOcultos(String[] splitlinea, Integer ocultar ) {
 		if(splitlinea[0].contains("<OCULTAR>") && (ocultar == 1 || ocultar == 0)) {
  			 ocultar=ocultar+1;
  		}
 		return ocultar;
 	}
-
 	private static void validadorRequeridos(String[] splitlinea, List<plantilla> plantillas) {
 		// TODO Auto-generated method stub
 	}
