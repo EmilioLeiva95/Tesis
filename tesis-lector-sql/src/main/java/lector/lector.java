@@ -1,7 +1,6 @@
 package lector;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,20 +8,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import objetos.tabla;
+import objetos.Netbeanstopostgres;
 import objetos.columna;
 import objetos.tipo;
 import objetos.plantilla;
-
-
 
 public class lector {
 	static List<tabla> tablasGlobal = new ArrayList();
 	static List<columna> columnasGlobal = new ArrayList();
 	static List<tipo> tipoGlobal = new ArrayList();
+	static Netbeanstopostgres con = new Netbeanstopostgres();
 	public static void main(String [] arg) {
 	      File archivo = null;
 	      FileReader fr = null;
 	      BufferedReader br = null;
+	      //con.connect();
 	      lectorScript(archivo,fr,br);
 	      lectorPlantilla(archivo,fr,br);
 	}
@@ -38,12 +38,18 @@ public class lector {
 		        Integer BPredet = 0;
 		        Integer Pfecha = 0;
 		        Integer ocultar = 0;
+		        Integer predeterminados = 0;
 		        tabla tablaAux = new tabla();
+		        columna columnaAux = new columna();
 		        while((linea=br.readLine())!=null) {
 		        	splitlinea = linea.split(" ");
 		        	validadorRequeridos(splitlinea, plantillas);
 		        	ocultar = validadorOcultos(splitlinea,ocultar);
 		        	tablaAux = ingresarOcultos(splitlinea,plantillas,ocultar,tablaAux);
+		        	predeterminados = validadorPredeterminados(splitlinea,predeterminados);
+		        	tablaAux = ingresarTablaPredeterminado(splitlinea,predeterminados,tablaAux);
+		        	columnaAux = ingresarColumnaPredeterminado(splitlinea,predeterminados,columnaAux,tablaAux);
+		        	ingresarPredeterminado(splitlinea,predeterminados,plantillas,columnaAux,tablaAux);
 		        	Pfecha=validadorFechaHora(splitlinea, plantillas, Pfecha);
 		        	BPredet = validadorPredeterminados(splitlinea, plantillas, BPredet);
 		        }
@@ -60,6 +66,99 @@ public class lector {
 	         }
 	      }
 	}
+	
+	private static columna ingresarColumnaPredeterminado(String[] splitlinea, Integer predeterminados, columna columnaAux, tabla tablaAux) {
+		if(predeterminados == 1 && splitlinea.length >= 3) {
+			if(splitlinea[splitlinea.length-3].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
+				if(!splitlinea[splitlinea.length-3].equals("<COLUMNA>") || !splitlinea[splitlinea.length-1].equals("<COLUMNA>")) {
+	 				System.out.println("ERROR: 2 SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+	 			 }
+				for(columna i : columnasGlobal) {
+	 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2]) && i.getTabla().getDescripcion().equals(tablaAux.getDescripcion())) {
+	 					columnaAux = i;
+	 				 }
+	 			 }
+			}
+			if(splitlinea[splitlinea.length-2].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
+ 				System.out.println("ERROR: 3 SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+ 			 }
+			return columnaAux;
+		}
+		return null;
+	}
+	
+	private static void ingresarPredeterminado(String[] splitlinea, Integer predeterminados, List<plantilla> plantillas, columna columnaAux, tabla tablaAux) {
+		if(predeterminados == 1) {
+			Integer contador = 0;
+			String aux = "";
+			plantilla plantillaNueva = new plantilla();
+			plantillaNueva.setIdplantilla(plantillas.size());
+			for(int i = 0; i < splitlinea.length; i++) {
+				if(contador == 1 && !splitlinea[i].equals("<D>")) {
+					aux = aux+splitlinea[i]+" ";
+				}
+				if(contador == 2) {
+					plantillaNueva.setAlmacenar(aux);
+					contador = contador+1;
+					aux = "";
+				}
+				if(contador == 3) {
+					aux = aux+splitlinea[i]+" ";
+				}
+				if(contador == 3 && splitlinea[splitlinea.length-1].equals("<D>")) {
+					plantillaNueva.setMostrar(aux);
+					plantillaNueva.setTabla(tablaAux);
+					plantillaNueva.setColumna(columnaAux);
+					plantillaNueva.setTipo(9);
+					plantillas.add(plantillaNueva);
+					contador = contador+1;
+				}
+				if(contador == 4) {
+					System.out.println("ERROR: 4 SINTAXIS INCORRECTA EN ETIQUETA D ");
+				}
+				if(splitlinea[i].equals("<D>") && splitlinea.length <= i+1) {
+					contador=contador+1;
+					if(splitlinea[i-1].equals("<D>") ) {
+						System.out.println("ERROR: 5 SINTAXIS INCORRECTA EN ETIQUETA D ");
+					}
+				}
+			}
+		}
+	}
+
+	private static tabla ingresarTablaPredeterminado(String[] splitlinea, Integer predeterminados, tabla tablaAux) {
+		if(predeterminados == 1) {
+			if(splitlinea.length >= 3) {
+				if(splitlinea[splitlinea.length-3].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
+					if(!splitlinea[splitlinea.length-3].equals("<TABLA>") || !splitlinea[splitlinea.length-1].equals("<TABLA>")) {
+		 				System.out.println("ERROR: 6 SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+		 			 }  
+					for(tabla i : tablasGlobal) {
+		 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2])) {
+		 					tablaAux = i;
+		 				 }
+		 			 }
+		 		}
+				if(splitlinea[splitlinea.length-2].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
+	 				System.out.println("ERROR: 7 SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+	 			 }
+			}
+		}
+		return tablaAux;
+	}
+
+	private static Integer validadorPredeterminados(String[] splitlinea, Integer predeterminados) {
+		if(splitlinea[0].contains("<PREDETERMINADO>")) {
+			predeterminados=predeterminados+1;
+			if(splitlinea.length > 1 || !splitlinea[0].equals("<PREDETERMINADO>")) {
+ 				System.out.println("ERROR: 8 SINTAXIS INCORRECTA EN ETIQUETA PREDETERMINADO");
+ 			 }
+		}
+		if(predeterminados == 3) {
+			System.out.println("ERROR: 14 INGRESO UN TERCER PREDETERMINADO");
+		}
+		return predeterminados;
+	}
 
 	private static tabla ingresarOcultos(String[] splitlinea, List<plantilla> plantillas, Integer ocultar,tabla tablaAux) {
 		if(ocultar == 1) {
@@ -67,13 +166,22 @@ public class lector {
 			plantillaNueva.setIdplantilla(plantillas.size());
 			if(splitlinea.length >= 3) {
 				if(splitlinea[splitlinea.length-3].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
-		 			 for(tabla i : tablasGlobal) {
+					if(!splitlinea[splitlinea.length-3].equals("<TABLA>") || !splitlinea[splitlinea.length-1].equals("<TABLA>")) {
+		 				System.out.println("ERROR: 9 SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+		 			 } 
+					for(tabla i : tablasGlobal) {
 		 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2])) {
 		 					tablaAux = i;
 		 				 }
 		 			 }
 		 		}
+				if(splitlinea[splitlinea.length-2].contains("<TABLA>") && splitlinea[splitlinea.length-1].contains("<TABLA>")) {
+	 				System.out.println("ERROR: 10 SINTAXIS INCORRECTA EN ETIQUETA TABLA ");
+	 			 }
 				if(splitlinea[splitlinea.length-3].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
+					if(!splitlinea[splitlinea.length-3].equals("<COLUMNA>") || !splitlinea[splitlinea.length-1].equals("<COLUMNA>")) {
+		 				System.out.println("ERROR: 11 SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+		 			 }
 					for(columna i : columnasGlobal) {
 		 				 if(i.getDescripcion().equals(splitlinea[splitlinea.length-2]) && i.getTabla().getDescripcion().equals(tablaAux.getDescripcion())) {
 		 					plantillaNueva.setTabla(tablaAux);
@@ -83,6 +191,9 @@ public class lector {
 		 				 }
 		 			 }
 				}
+				if(splitlinea[splitlinea.length-2].contains("<COLUMNA>") && splitlinea[splitlinea.length-1].contains("<COLUMNA>")) {
+	 				System.out.println("ERROR: 12 SINTAXIS INCORRECTA EN ETIQUETA COLUMNA ");
+	 			 }
 			}
 		}
 		return tablaAux;
@@ -316,9 +427,15 @@ public class lector {
 	}
 	
 	private static Integer validadorOcultos(String[] splitlinea, Integer ocultar ) {
-		if(splitlinea[0].contains("<OCULTAR>") && (ocultar == 1 || ocultar == 0)) {
+		if(splitlinea[0].contains("<OCULTAR>")) {
  			 ocultar=ocultar+1;
+ 			 if(splitlinea.length > 1 || !splitlinea[0].equals("<OCULTAR>")) {
+ 				System.out.println("ERROR: 1 SINTAXIS INCORRECTA EN ETIQUETA OCULTAR");
+ 			 }
  		}
+		if(ocultar == 3) {
+			System.out.println("ERROR: 13 INGRESO UN TERCER OCULTAR");
+		}
 		return ocultar;
 	}
 	private static void validadorRequeridos(String[] splitlinea, List<plantilla> plantillas) {
@@ -589,4 +706,7 @@ public class lector {
 		}   
 	}
 }
+
+
+
 
